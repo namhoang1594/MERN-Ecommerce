@@ -82,7 +82,7 @@ export const loginUser = createAsyncThunk("/auth/login", async (FormData) => {
   return response.data;
 });
 
-export const checkAuth = createAsyncThunk("/auth/check-auth", async () => {
+export const checkAuth = createAsyncThunk("/auth/checkauth", async () => {
   const response = await axios.get(
     "http://localhost:5000/api/auth/check-auth",
     {
