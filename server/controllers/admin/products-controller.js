@@ -71,7 +71,7 @@ const fetchAllProduct = async (req, res) => {
   }
 };
 
-const editProduct = async (req, res) => {
+let editProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -96,8 +96,9 @@ const editProduct = async (req, res) => {
     findProduct.description = description || findProduct.description;
     findProduct.category = category || findProduct.category;
     findProduct.brand = brand || findProduct.brand;
-    findProduct.price = price || findProduct.price;
-    findProduct.salePrice = salePrice || findProduct.salePrice;
+    findProduct.price = price === "" ? 0 : price || findProduct.price;
+    findProduct.salePrice =
+      salePrice === "" ? 0 : salePrice || findProduct.salePrice;
     findProduct.totalStock = totalStock || findProduct.totalStock;
 
     await findProduct.save();
@@ -116,7 +117,7 @@ const editProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await products.findByIdAndUpdate(id);
+    const product = await products.findByIdAndDelete(id);
     if (!product)
       return res.status(404).json({
         success: false,

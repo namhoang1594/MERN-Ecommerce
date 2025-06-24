@@ -1,4 +1,5 @@
-const expess = require("express");
+const express = require("express");
+const router = express.Router();
 
 const {
   handleImageUpload,
@@ -10,11 +11,10 @@ const {
 
 const { upload } = require("../../helpers/cloudinary");
 
-const router = expess.Router();
-
 router.post("/upload-image", upload.single("my_file"), handleImageUpload);
 router.post("/add", addProduct);
 router.put("/edit/:id", editProduct);
-router.get("get", fetchAllProduct);
+router.get("/get", fetchAllProduct);
+router.delete("/delete/:id", deleteProduct);
 
 module.exports = router;
