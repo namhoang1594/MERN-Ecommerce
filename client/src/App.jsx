@@ -17,7 +17,7 @@ import CheckAuth from "./components/common/check-auth";
 import UnauthPage from "./pages/unauth-page";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { checkAuth } from "./store/auth-slice";
+import { checkAuth, setUser } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function App() {
@@ -27,6 +27,10 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      dispatch(setUser(JSON.parse(storedUser)));
+    }
     dispatch(checkAuth());
   }, [dispatch]);
 

@@ -1,6 +1,6 @@
 import CommonForm from "@/components/common/form";
 import { loginFormControls } from "@/config";
-import { loginUser } from "@/store/auth-slice";
+import { loginUser, setUser } from "@/store/auth-slice";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -19,6 +19,9 @@ function AuthLogin() {
     event.preventDefault();
     dispatch(loginUser(formData)).then((data) => {
       if (data?.payload?.success) {
+        const user = data.payload.user;
+        localStorage.setItem("user", JSON.stringify(user));
+        dispatch(setUser(user));
         toast.success(data?.payload?.message);
       } else {
         toast.error(data?.payload?.message);
