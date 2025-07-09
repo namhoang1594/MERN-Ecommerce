@@ -62,9 +62,15 @@ function HeaderRightContent() {
     dispatch(logoutUser());
   }
 
+  // useEffect(() => {
+  //   dispatch(fetchCartItems(user?.id));
+  // }, [dispatch]);
+
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
+    if (user?.id) {
+      dispatch(fetchCartItems(user.id));
+    }
+  }, [user?.id, dispatch]);
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -78,6 +84,7 @@ function HeaderRightContent() {
           <span className="sr-only">Cart</span>
         </Button>
         <UserCartWrapper
+          setOpenCartSheet={setOpenCartSheet}
           cartItems={
             cartItems && cartItems.items && cartItems.items.length > 0
               ? cartItems.items

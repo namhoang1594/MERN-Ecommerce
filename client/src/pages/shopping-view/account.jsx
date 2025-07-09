@@ -1,7 +1,7 @@
-// import accountImg from "../../assets/images";
+import accountImg from "../../assets/images/banner/banner3.png";
 
 import Address from "@/components/shopping-view/address";
-import Orders from "@/components/shopping-view/orders";
+import ShoppingOrders from "@/components/shopping-view/orders";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function ShoppingAccount() {
@@ -9,7 +9,7 @@ function ShoppingAccount() {
     <div className="flex flex-col">
       <div className="relative h-[300px] w-full overflow-hidden">
         <img
-          // src={accountImg}
+          src={accountImg}
           alt=""
           className="h-full w-full object-cover object-center"
         />
@@ -22,7 +22,7 @@ function ShoppingAccount() {
               <TabsTrigger value="address">Address</TabsTrigger>
             </TabsList>
             <TabsContent value="orders">
-              <Orders />
+              <ShoppingOrders />
             </TabsContent>
             <TabsContent value="address">
               <Address />

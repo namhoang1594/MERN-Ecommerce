@@ -1,10 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// const initialState = {
+//   user: null,
+//   isAuthenticated: false,
+//   isLoading: true,
+// };
+
+const savedUser = localStorage.getItem("user");
 const initialState = {
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
+  user: savedUser ? JSON.parse(savedUser) : null,
+  isAuthenticated: savedUser ? true : false,
+  isLoading: false,
 };
 
 const authSlice = createSlice({

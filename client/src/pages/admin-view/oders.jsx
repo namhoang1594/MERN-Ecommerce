@@ -1,5 +1,9 @@
-function AdminOders() {
-  return <div>admin oders</div>;
+function AdminOrders() {
+  return (
+    <div>
+      <AdminOrders />
+    </div>
+  );
 }
 
-export default AdminOders;
+export default AdminOrders;
