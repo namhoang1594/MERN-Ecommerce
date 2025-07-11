@@ -5,6 +5,7 @@ import UserCartItemsContent from "@/components/shopping-view/cart-items-content"
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { createNewOrder } from "@/store/shop/order-slice";
+import { toast } from "sonner";
 
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -13,7 +14,6 @@ function ShoppingCheckout() {
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
   const [isPaymentStart, setIsPaymentStart] = useState(false);
   const dispatch = useDispatch();
-  console.log(currentSelectedAddress, "cartItems");
 
   const totalCartAmount =
     cartItems && cartItems.items && cartItems.items.length > 0
@@ -29,6 +29,14 @@ function ShoppingCheckout() {
       : 0;
 
   function handleInitiatePaypalPayment() {
+    if (currentSelectedAddress === null) {
+      toast.error("Please select one address to proceed...");
+    }
+
+    if (cartItems.length === 0) {
+      toast.error("your cart is empty!!!");
+    }
+
     const orderData = {
       userId: user?.id,
       cartId: cartItems?._id,

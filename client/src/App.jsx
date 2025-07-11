@@ -20,7 +20,7 @@ import { checkAuth, setUser } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
 import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
-import AdminOrders from "./pages/admin-view/oders";
+import AdminOrders from "./pages/admin-view/order";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
