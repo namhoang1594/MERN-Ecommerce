@@ -9,6 +9,7 @@ const shopProductRouter = require("./routes/shop/products-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
 const shopAddressRouter = require("./routes/shop/address-routes");
 const shopOrderRouter = require("./routes/shop/order-routes");
+const shopSearchProductRouter = require("./routes/shop/search-routes");
 
 // create a database connection
 mongoose
@@ -45,5 +46,6 @@ app.use("/api/shop/products", shopProductRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
+app.use("/api/shop/search", shopSearchProductRouter);
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));
