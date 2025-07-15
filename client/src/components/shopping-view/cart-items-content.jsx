@@ -6,10 +6,36 @@ import { toast } from "sonner";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { productList } = useSelector((state) => state.shopProducts);
 
   const dispatch = useDispatch();
 
   async function handleUpdateQuantity(getCartItem, typeOfAction) {
+    if (typeOfAction == "plus") {
+      let getCartItems = cartItems.item || [];
+
+      if (getCartItems.length) {
+        const indexOfCurrentCartItem = getCartItems.findIndex(
+          (item) => item.productId === getCartItem?.productId
+        );
+
+        const getCurrentProductIndex = productList.findIndex(
+          (product) => product._id === getCartItem?.productId
+        );
+        const getTotalStock = productList[getCurrentProductIndex].totalStock;
+        if (indexOfCurrentCartItem > -1) {
+          const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
+          if (getQuantity + 1 > getTotalStock) {
+            toast.warning(
+              `Only ${getQuantity} quantity can be added for this item`
+            );
+            return;
+          }
+        }
+      }
+    }
+
     const resultAction = await dispatch(
       updateCartItems({
         userId: user?.id,
