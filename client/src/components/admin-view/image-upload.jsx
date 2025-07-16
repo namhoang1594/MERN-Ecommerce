@@ -14,6 +14,7 @@ function ProductImageUpload({
   imageLoadingState,
   setImageLoadingState,
   isEditMode,
+  isCustomStyling = false,
 }) {
   const inputRef = useRef(null);
 
@@ -60,14 +61,14 @@ function ProductImageUpload({
   }, [imageFile]);
 
   return (
-    <div className="w-full mx-auto max-w-md p-3">
+    <div className={`w-full mt-4 ${isCustomStyling ? "" : "mx-auto max-w-md"}`}>
       <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         className={`${
           isEditMode ? "opacity-60" : ""
-        } border-2 border-dashed rounded-lg p-3`}
+        } border-2 border-dashed rounded-lg p-4`}
       >
         <Input
           id="image-upload"
