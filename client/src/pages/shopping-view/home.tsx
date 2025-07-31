@@ -21,10 +21,8 @@ import { useNavigate } from "react-router-dom";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
-import { getFeatureImages } from "@/store/common-slice";
 import { RootState, AppDispatch } from "@/store/store";
 import { Product } from "@/types/products/product.types";
-import { FeatureImage } from "@/store/common-slice/common.types";
 
 interface CategoryItem {
   id: string;
@@ -63,9 +61,9 @@ function ShoppingHome() {
   const { productList, productDetails } = useSelector(
     (state: RootState) => state.shopProducts
   );
-  const { featureImageList } = useSelector(
-    (state: RootState) => state.commonFeature
-  );
+  // const { featureImageList } = useSelector(
+  //   (state: RootState) => state.commonFeature
+  // );
   const { user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
@@ -90,7 +88,7 @@ function ShoppingHome() {
       [section]: [getCurrentItem.id],
     };
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
-    navigate(`/shop/listing`);
+    navigate(`/listing`);
   }
 
   function handleGetProductDetails(getCurrentProductId: string) {

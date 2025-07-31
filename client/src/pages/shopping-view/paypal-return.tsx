@@ -38,7 +38,7 @@ const PaypalReturnPage = () => {
           res.payload.success
         ) {
           sessionStorage.removeItem("currentOrderId");
-          window.location.href = "/shop/payment-success";
+          window.location.href = "/payment-success";
         }
       });
     }

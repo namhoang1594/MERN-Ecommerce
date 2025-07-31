@@ -68,7 +68,7 @@ const UserCartWrapper: React.FC<UserCartWrapperProps> = ({
       <Button
         className="w-full mt-6"
         onClick={() => {
-          navigate("/shop/checkout");
+          navigate("/checkout");
           setOpenCartSheet(false);
         }}
       >

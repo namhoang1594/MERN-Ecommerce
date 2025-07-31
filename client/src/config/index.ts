@@ -147,14 +147,14 @@ export const addressFormControls: FormControlItem[] = [
 ];
 
 export const shoppingViewHeaderMenuItems: HeaderMenuItem[] = [
-  { id: "home", label: "Home", path: "/shop/home" },
-  { id: "products", label: "Products", path: "/shop/listing" },
-  { id: "man", label: "Man", path: "/shop/listing" },
-  { id: "woman", label: "Woman", path: "/shop/listing" },
-  { id: "kids", label: "Kids", path: "/shop/listing" },
-  { id: "accessories", label: "Accessories", path: "/shop/listing" },
-  { id: "footwear", label: "Footwear", path: "/shop/listing" },
-  { id: "search", label: "Search", path: "/shop/search" },
+  { id: "home", label: "Home", path: "/" },
+  { id: "products", label: "Products", path: "/listing" },
+  { id: "man", label: "Man", path: "/listing" },
+  { id: "woman", label: "Woman", path: "/listing" },
+  { id: "kids", label: "Kids", path: "/listing" },
+  { id: "accessories", label: "Accessories", path: "/listing" },
+  { id: "footwear", label: "Footwear", path: "/listing" },
+  { id: "search", label: "Search", path: "/search" },
 ];
 
 export const filterOptions: FilterOptions = {

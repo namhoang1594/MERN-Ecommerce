@@ -5,22 +5,27 @@ import AuthLogin from "./pages/auth/login";
 import AdminLayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
 import AdminProducts from "./pages/admin-view/products";
-import AdminFeatures from "./pages/admin-view/features";
+import AdminOrders from "./pages/admin-view/order";
+import AdminBrand from "./pages/admin-view/brand/brand";
+import BannerManager from "./pages/admin-view/site-setting/banner";
+import SiteSetting from "./pages/admin-view/site-setting/site-setting";
+
 import ShoppingLayout from "./components/shopping-view/layout";
-import NotFound from "./pages/not-found";
 import ShoppingHome from "./pages/shopping-view/home";
 import ShoppingListing from "./pages/shopping-view/listing";
 import ShoppingCheckout from "./pages/shopping-view/checkout";
 import ShoppingAccount from "./pages/shopping-view/account";
-import CheckAuth from "./components/common/check-auth";
+import PaypalReturnPage from "./pages/shopping-view/paypal-return";
+import PaymentSuccessPage from "./pages/shopping-view/payment-success";
+import SearchProducts from "./pages/shopping-view/search";
+import NotFound from "./pages/not-found";
 import UnauthPage from "./pages/unauth-page";
+import CheckAuth from "./components/common/check-auth";
+import PrivateRoute from "./components/common/private-route";
+import AdminRoute from "./components/common/admin-route";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { checkAuth, setUser } from "./store/auth-slice";
-import PaypalReturnPage from "./pages/shopping-view/paypal-return";
-import PaymentSuccessPage from "./pages/shopping-view/payment-success";
-import AdminOrders from "./pages/admin-view/order";
-import SearchProducts from "./pages/shopping-view/search";
 import { AppDispatch, RootState } from "./store/store";
 import { Skeleton } from "./components/ui/skeleton";
 
@@ -43,10 +48,47 @@ const App = () => {
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
-        <Route
-          path=""
-          element={<CheckAuth isAuthenticated={isAuthenticated} user={user} />}
-        />
+        {/* Public user routes (no prefix like /shop) */}
+        <Route path="/" element={<ShoppingLayout />}>
+          <Route index element={<ShoppingHome />} />
+          <Route path="listing" element={<ShoppingListing />} />
+          <Route path="search" element={<SearchProducts />} />
+
+          <Route
+            path="checkout"
+            element={
+              <PrivateRoute>
+                <ShoppingCheckout />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="account"
+            element={
+              <PrivateRoute>
+                <ShoppingAccount />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="paypal-return"
+            element={
+              <PrivateRoute>
+                <PaypalReturnPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="payment-success"
+            element={
+              <PrivateRoute>
+                <PaymentSuccessPage />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+
+        {/* Auth routes */}
         <Route
           path="/auth"
           element={
@@ -59,6 +101,7 @@ const App = () => {
           <Route path="register" element={<AuthRegister />} />
         </Route>
 
+        {/* Admin routes */}
         <Route
           path="/admin"
           element={
@@ -67,28 +110,57 @@ const App = () => {
             </CheckAuth>
           }
         >
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="features" element={<AdminFeatures />} />
+          <Route
+            path="dashboard"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="products"
+            element={
+              <AdminRoute>
+                <AdminProducts />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="orders"
+            element={
+              <AdminRoute>
+                <AdminOrders />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="brands"
+            element={
+              <AdminRoute>
+                <AdminBrand />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="banner"
+            element={
+              <AdminRoute>
+                <BannerManager />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="site-setting"
+            element={
+              <AdminRoute>
+                <SiteSetting />
+              </AdminRoute>
+            }
+          />
         </Route>
 
-        <Route
-          path="/shop"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <ShoppingLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="home" element={<ShoppingHome />} />
-          <Route path="listing" element={<ShoppingListing />} />
-          <Route path="checkout" element={<ShoppingCheckout />} />
-          <Route path="account" element={<ShoppingAccount />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
-          <Route path="payment-success" element={<PaymentSuccessPage />} />
-          <Route path="search" element={<SearchProducts />} />
-        </Route>
+        {/* Other routes */}
         <Route path="/unauth-page" element={<UnauthPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

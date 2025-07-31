@@ -52,3 +52,11 @@ export interface IOrder {
     paymentId?: string;
     payerId?: string;
 }
+
+export interface IOrderWithUserName extends Omit<IOrder, "userId"> {
+    _id: Types.ObjectId;
+    userId: {
+        _id: Types.ObjectId;
+        userName: string;
+    };
+}
