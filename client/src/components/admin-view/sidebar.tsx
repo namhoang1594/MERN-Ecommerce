@@ -3,6 +3,9 @@ import {
   BadgeCheck,
   LayoutDashboard,
   ShoppingBasket,
+  ImageIcon,
+  SettingsIcon,
+  CombineIcon,
 } from "lucide-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +36,30 @@ const adminSidebarMenuItems: AdminSidebarMenuItem[] = [
     label: "Orders",
     path: "/admin/orders",
     icon: <BadgeCheck />,
+  },
+  {
+    id: "brands",
+    label: "Brand",
+    path: "/admin/brands",
+    icon: <CombineIcon />,
+  },
+  // {
+  //   id: "orders",
+  //   label: "Orders",
+  //   path: "/admin/orders",
+  //   icon: <BadgeCheck />,
+  // },
+  {
+    id: "banners",
+    label: "Banners",
+    path: "/admin/banner",
+    icon: <ImageIcon />,
+  },
+  {
+    id: "setting",
+    label: "Setting",
+    path: "/admin/site-setting",
+    icon: <SettingsIcon />,
   },
 ];
 

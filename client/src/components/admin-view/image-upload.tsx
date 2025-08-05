@@ -6,27 +6,36 @@ import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
 
-type ProductImageUploadProps = {
+export type UploadedResult = {
+  url: string;
+  public_id: string;
+};
+
+export type ImageUploadProps = {
   imageFile: File | null;
   setImageFile: (file: File | null) => void;
-  uploadedImageUrl: string;
-  setUploadedImageUrl: (url: string) => void;
+  uploadedResult: UploadedResult | null;
+  setUploadedResult: (result: UploadedResult | null) => void;
   imageLoadingState: boolean;
   setImageLoadingState: (loading: boolean) => void;
   isEditMode: boolean;
   isCustomStyling?: boolean;
+  uploadApiUrl: string;
+  label?: string;
 };
 
-function ProductImageUpload({
+function ImageUpload({
   imageFile,
   setImageFile,
-  uploadedImageUrl,
-  setUploadedImageUrl,
+  uploadedResult,
+  setUploadedResult,
   imageLoadingState,
   setImageLoadingState,
   isEditMode,
   isCustomStyling = false,
-}: ProductImageUploadProps): React.ReactElement {
+  uploadApiUrl,
+  label = "Upload Image",
+}: ImageUploadProps): React.ReactElement {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   function handleImageFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -46,22 +55,20 @@ function ProductImageUpload({
 
   function handleRemoveImage() {
     setImageFile(null);
+    setUploadedResult(null);
     if (inputRef.current) {
       inputRef.current.value = "";
     }
   }
 
-  async function uploadImageToCloudinary() {
+  async function uploadImage() {
     setImageLoadingState(true);
     const data = new FormData();
     data.append("my_file", imageFile as File);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/admin/products/upload-image",
-        data
-      );
+      const response = await axios.post(uploadApiUrl, data);
       if (response?.data?.success) {
-        setUploadedImageUrl(response.data.result.url);
+        setUploadedResult(response.data.result);
       }
     } catch (error) {
       console.error("Image upload failed", error);
@@ -71,12 +78,12 @@ function ProductImageUpload({
   }
 
   useEffect(() => {
-    if (imageFile !== null) uploadImageToCloudinary();
+    if (imageFile !== null) uploadImage();
   }, [imageFile]);
 
   return (
     <div className={`w-full mt-4 ${isCustomStyling ? "" : "mx-auto max-w-md"}`}>
-      <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
+      <Label className="text-lg font-semibold mb-2 block">{label}</Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -92,10 +99,11 @@ function ProductImageUpload({
           onChange={handleImageFileChange}
           disabled={isEditMode}
         />
-        {!imageFile ? (
+
+        {!imageFile && !uploadedResult ? (
           <Label
             htmlFor="image-upload"
-            className={`${
+            className={`$ {
               isEditMode ? "cursor-not-allowed" : ""
             } flex flex-col items-center justify-center h-32 cursor-pointer`}
           >
@@ -105,20 +113,29 @@ function ProductImageUpload({
         ) : imageLoadingState ? (
           <Skeleton className="h-10 bg-gray-100" />
         ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <FileIcon className="w-8 h-8 text-primary mr-2" />
+          <div className="flex items-center gap-4">
+            {uploadedResult?.url && (
+              <img
+                src={uploadedResult.url}
+                alt="Uploaded"
+                className="w-20 h-20 object-contain border rounded-md"
+              />
+            )}
+
+            <div className="flex-1">
+              <p className="text-sm font-medium">
+                {imageFile?.name || "Đã có ảnh"}
+              </p>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground"
+                onClick={handleRemoveImage}
+              >
+                <XIcon className="w-4 h-4" />
+                <span className="sr-only">Remove File</span>
+              </Button>
             </div>
-            <p className="text-sm font-medium">{imageFile.name}</p>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={handleRemoveImage}
-            >
-              <XIcon className="w-4 h-4" />
-              <span className="sr-only">Remove File</span>
-            </Button>
           </div>
         )}
       </div>
@@ -126,4 +143,4 @@ function ProductImageUpload({
   );
 }
 
-export default ProductImageUpload;
+export default ImageUpload;
