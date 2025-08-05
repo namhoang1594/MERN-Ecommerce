@@ -1,8 +1,7 @@
-export interface Brand {
+export interface Category {
     _id?: string;
     name: string;
     slug?: string;
-    description?: string;
     image: {
         url: string;
         public_id: string;
@@ -11,11 +10,10 @@ export interface Brand {
     updatedAt?: string;
 }
 
-export interface IBrandPayload {
+export interface ICategoryPayload {
     name: string;
     image: {
         url: string;
         public_id: string;
     };
-    description?: string;
 }

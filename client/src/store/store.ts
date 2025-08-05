@@ -3,6 +3,7 @@ import authReducer from "./auth-slice";
 import adminDashboardSlice from "./admin/dashboard-slice";
 import adminProductsSlice from "./admin/products-slice";
 import adminOrderSlice from "./admin/order-slice";
+import adminCategorySlice from "./admin/category-slice";
 import adminBrandSlice from "./admin/brand-slice";
 import adminBannerSlice from "./admin/site-setting/banner-slice";
 import adminSettingSlice from "./admin/site-setting/setting-slice";
@@ -24,6 +25,7 @@ const store = configureStore({
     adminOrder: adminOrderSlice,
     adminBanner: adminBannerSlice,
     adminSetting: adminSettingSlice,
+    adminCategory: adminCategorySlice,
     adminBrand: adminBrandSlice,
 
     shopProducts: shopProductsSlice,

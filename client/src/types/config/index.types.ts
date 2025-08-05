@@ -44,3 +44,8 @@ export type CategoryOptionKey = typeof categoryOptionsKeys[number];
 
 export const brandOptionsKeys = ["nike", "adidas", "gucci", "dior", "h&m"] as const;
 export type BrandOptionKey = typeof brandOptionsKeys[number];
+
+export type UploadedResult = {
+    url: string;
+    public_id: string;
+};

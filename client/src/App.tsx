@@ -6,6 +6,7 @@ import AdminLayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
 import AdminProducts from "./pages/admin-view/products";
 import AdminOrders from "./pages/admin-view/order";
+import AdminCategory from "./pages/admin-view/category/category";
 import AdminBrand from "./pages/admin-view/brand/brand";
 import BannerManager from "./pages/admin-view/site-setting/banner";
 import SiteSetting from "./pages/admin-view/site-setting/site-setting";
@@ -131,6 +132,14 @@ const App = () => {
             element={
               <AdminRoute>
                 <AdminOrders />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="categories"
+            element={
+              <AdminRoute>
+                <AdminCategory />
               </AdminRoute>
             }
           />

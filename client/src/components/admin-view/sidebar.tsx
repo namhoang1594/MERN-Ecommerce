@@ -5,7 +5,8 @@ import {
   ShoppingBasket,
   ImageIcon,
   SettingsIcon,
-  CombineIcon,
+  List,
+  BriefcaseBusiness,
 } from "lucide-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,17 +39,17 @@ const adminSidebarMenuItems: AdminSidebarMenuItem[] = [
     icon: <BadgeCheck />,
   },
   {
+    id: "category",
+    label: "Category",
+    path: "/admin/categories",
+    icon: <List />,
+  },
+  {
     id: "brands",
     label: "Brand",
     path: "/admin/brands",
-    icon: <CombineIcon />,
+    icon: <BriefcaseBusiness />,
   },
-  // {
-  //   id: "orders",
-  //   label: "Orders",
-  //   path: "/admin/orders",
-  //   icon: <BadgeCheck />,
-  // },
   {
     id: "banners",
     label: "Banners",

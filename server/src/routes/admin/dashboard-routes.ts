@@ -1,7 +1,7 @@
-import express from "express";
+import { Router } from "express";
 import { getDashboardStatsController, } from "../../controllers/admin/dashboard-controller";
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", getDashboardStatsController);
 

@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
     createBrand,
     deleteBrand,
@@ -6,30 +6,10 @@ import {
     getBrandById,
     updateBrand
 } from "../../controllers/admin/brand-controller";
-import { imageUploadUtil, upload } from "../../helpers/cloudinary";
+import { upload } from "../../helpers/cloudinary";
 
 
-const router = express.Router();
-
-router.post("/upload-image", upload.single("my_file"), async (req, res) => {
-    try {
-        if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-
-        const result = await imageUploadUtil(req.file.buffer, "brands");
-
-        res.status(200).json({
-            success: true,
-            result: {
-                url: result.secure_url,
-                public_id: result.public_id,
-            },
-        });
-    } catch (error) {
-        res.status(500).json({ message: "Image upload failed" });
-    }
-});
-
-
+const router = Router();
 // GET list + search + pagination
 router.get("/", getAllBrands);
 

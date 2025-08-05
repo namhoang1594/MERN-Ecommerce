@@ -5,11 +5,7 @@ import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
-
-export type UploadedResult = {
-  url: string;
-  public_id: string;
-};
+import { UploadedResult } from "@/types/config/index.types";
 
 export type ImageUploadProps = {
   imageFile: File | null;
@@ -22,6 +18,7 @@ export type ImageUploadProps = {
   isCustomStyling?: boolean;
   uploadApiUrl: string;
   label?: string;
+  uploadFolder: string;
 };
 
 function ImageUpload({
@@ -35,6 +32,7 @@ function ImageUpload({
   isCustomStyling = false,
   uploadApiUrl,
   label = "Upload Image",
+  uploadFolder,
 }: ImageUploadProps): React.ReactElement {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -65,6 +63,7 @@ function ImageUpload({
     setImageLoadingState(true);
     const data = new FormData();
     data.append("my_file", imageFile as File);
+    data.append("folder", uploadFolder);
     try {
       const response = await axios.post(uploadApiUrl, data);
       if (response?.data?.success) {
@@ -103,7 +102,7 @@ function ImageUpload({
         {!imageFile && !uploadedResult ? (
           <Label
             htmlFor="image-upload"
-            className={`$ {
+            className={`${
               isEditMode ? "cursor-not-allowed" : ""
             } flex flex-col items-center justify-center h-32 cursor-pointer`}
           >

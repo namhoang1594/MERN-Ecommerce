@@ -13,63 +13,65 @@ import {
 } from "@/components/ui/table";
 import { Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
-import { Brand } from "@/store/admin/brand-slice/brand.types";
-import BrandFormModal from "./brandFormModal";
 import ConfirmModal from "@/components/common/confirm-modal";
+import { Category } from "@/store/admin/category-slice/category.types";
 import {
-  deleteBrand,
-  fetchAllBrands,
-  setCurrentBrand,
+  deleteCategory,
+  fetchAllCategory,
+  setCurrentCategory,
   setIsEdit,
   setOpenModal,
-} from "@/store/admin/brand-slice";
+} from "@/store/admin/category-slice";
+import CategoryFormModal from "./categoryFormModal";
 
-const BrandPage = () => {
+const CategoryPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { brandList, isLoading, openModal, isEdit } = useSelector(
-    (state: RootState) => state.adminBrand
+  const { categoryList, isLoading, openModal, isEdit } = useSelector(
+    (state: RootState) => state.adminCategory
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredList, setFilteredList] = useState<Brand[]>([]);
+  const [filteredList, setFilteredList] = useState<Category[]>([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
 
   useEffect(() => {
-    dispatch(fetchAllBrands());
+    dispatch(fetchAllCategory());
   }, [dispatch]);
 
   useEffect(() => {
     if (searchTerm.trim()) {
       setFilteredList(
-        brandList.filter((b) =>
+        categoryList.filter((b) =>
           b.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
       );
     } else {
-      setFilteredList(brandList);
+      setFilteredList(categoryList);
     }
-  }, [searchTerm, brandList]);
+  }, [searchTerm, categoryList]);
 
-  const handleEdit = (brand: Brand) => {
-    dispatch(setCurrentBrand(brand));
+  const handleEdit = (category: Category) => {
+    dispatch(setCurrentCategory(category));
     dispatch(setIsEdit(true));
     dispatch(setOpenModal(true));
   };
 
-  const handleDelete = (brand: Brand) => {
-    setBrandToDelete(brand);
+  const handleDelete = (category: Category) => {
+    setCategoryToDelete(category);
     setConfirmOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (!brandToDelete?._id) return;
+    if (!categoryToDelete?._id) return;
     setConfirmOpen(false);
-    setBrandToDelete(null);
+    setCategoryToDelete(null);
     try {
-      await dispatch(deleteBrand(brandToDelete._id));
-      toast.success("Xóa thương hiệu thành công!");
+      await dispatch(deleteCategory(categoryToDelete._id));
+      toast.success("Xóa danh mục thành công!");
     } catch (error) {
-      toast.error("Có lỗi khi xóa thương hiệu.");
+      toast.error("Có lỗi khi xóa danh mục.");
     }
   };
 
@@ -77,19 +79,19 @@ const BrandPage = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <Input
-          placeholder="Tìm kiếm thương hiệu..."
+          placeholder="Tìm kiếm danh mục..."
           className="max-w-sm"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <Button
           onClick={() => {
-            dispatch(setCurrentBrand(null));
+            dispatch(setCurrentCategory(null));
             dispatch(setIsEdit(false));
             dispatch(setOpenModal(true));
           }}
         >
-          Tạo thương hiệu mới
+          Tạo danh mục mới
         </Button>
       </div>
 
@@ -99,34 +101,32 @@ const BrandPage = () => {
             <TableRow>
               <TableHead>Hình ảnh</TableHead>
               <TableHead>Tên</TableHead>
-              <TableHead>Mô tả</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredList.map((brand) => (
-              <TableRow key={brand._id}>
+            {filteredList.map((category) => (
+              <TableRow key={category._id}>
                 <TableCell>
                   <img
-                    src={brand.image?.url}
-                    alt={brand.name}
+                    src={category.image?.url}
+                    alt={category.name}
                     className="h-10 w-10 object-cover rounded"
                   />
                 </TableCell>
-                <TableCell>{brand.name}</TableCell>
-                <TableCell>{brand.description || "-"}</TableCell>
+                <TableCell>{category.name}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleEdit(brand)}
+                    onClick={() => handleEdit(category)}
                   >
                     <Pencil className="w-4 h-4" />
                   </Button>
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={() => handleDelete(brand)}
+                    onClick={() => handleDelete(category)}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
@@ -137,17 +137,17 @@ const BrandPage = () => {
         </Table>
         {filteredList.length === 0 && !isLoading && (
           <p className="text-center text-muted-foreground p-4">
-            Không có thương hiệu nào.
+            Không có danh mục nào.
           </p>
         )}
       </div>
 
       {/* Modal */}
-      <BrandFormModal
+      <CategoryFormModal
         open={openModal}
         isEdit={isEdit}
         onClose={() => dispatch(setOpenModal(false))}
-        onSuccess={() => dispatch(fetchAllBrands())}
+        onSuccess={() => dispatch(fetchAllCategory())}
       />
 
       <ConfirmModal
@@ -155,10 +155,10 @@ const BrandPage = () => {
         onClose={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}
         title="Xác nhận xóa"
-        description={`Bạn có chắc chắn muốn xóa thương hiệu "${brandToDelete?.name}"?`}
+        description={`Bạn có chắc chắn muốn xóa brand "${categoryToDelete?.name}"?`}
       />
     </div>
   );
 };
 
-export default BrandPage;
+export default CategoryPage;

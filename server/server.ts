@@ -9,8 +9,9 @@ import { connectDB } from "./src/config/db";
 
 
 // Import routes
-import authRouter from "./src/routes/auth/auth-routes";
+import uploadImageRoutes from "./src/helpers/image-upload.routes";
 
+import authRouter from "./src/routes/auth/auth-routes";
 import adminDashboardRoutes from "./src/routes/admin/dashboard-routes";
 import adminProductsRouter from "./src/routes/admin/products-routes";
 import adminOrdersRouter from "./src/routes/admin/order-routes";
@@ -45,6 +46,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+app.use("/api", uploadImageRoutes);
+
 app.use("/api/auth", authRouter);
 app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/admin/products", adminProductsRouter);
