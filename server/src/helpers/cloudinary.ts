@@ -40,7 +40,8 @@ export const imageUploadUtil = async (
 };
 
 export const imageDeleteUtil = async (public_id: string): Promise<void> => {
-  await cloudinary.uploader.destroy(public_id, { resource_type: "image" });
+  const result = await cloudinary.uploader.destroy(public_id, { resource_type: "image" });
+  return result;
 };
 
 export { upload };

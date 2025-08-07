@@ -1,104 +1,83 @@
 import { Request, Response } from "express";
-import { imageUploadUtil } from "../../helpers/cloudinary";
 import * as productService from "../../services/admin/product.service";
 
-
-export const handleImageUpload = async (req: Request, res: Response) => {
+export const createProduct = async (req: Request, res: Response) => {
   try {
-    const fileBuffer = req.file!.buffer;
-    const originalname = req.file!.originalname;
-    const result = await imageUploadUtil(fileBuffer, originalname);
-
-    res.json({
-      success: true,
-      result,
-    });
-  } catch (error) {
-    res.json({
-      success: false,
-      message: "Tải ảnh lên thất bại!",
-    });
-  }
-};
-
-export const addProduct = async (req: Request, res: Response) => {
-  try {
-
-    const product = await productService.createProduct(req.body);
-
+    const createdProduct = await productService.createProductService(req.body);
     res.status(201).json({
       success: true,
-      data: product,
+      message: "Tạo sản phẩm thành công",
+      createdProduct,
     });
-  } catch (e) {
-    res.status(500).json({
-      success: false,
-      message: "Tao sản phẩm thất bại!",
-    });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
-export const fetchAllProduct = async (req: Request, res: Response) => {
+export const getProducts = async (req: Request, res: Response) => {
   try {
+    const { page = "1", limit = "10", search = "", category, brand, status } = req.query;
 
-    const listOfProduct = await productService.getAllProducts();
+    const result = await productService.getProductsService(
+      parseInt(page as string),
+      parseInt(limit as string),
+      search as string,
+      category as string,
+      brand as string,
+      status as string
+    );
 
-    res.status(200).json({
-      success: true,
-      data: listOfProduct,
-    });
-  } catch (e) {
-    res.status(500).json({
-      success: false,
-      message: "Lấy danh sách sản phẩm thất bại!",
-    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
-export const editProduct = async (req: Request, res: Response) => {
+export const getProductById = async (req: Request, res: Response) => {
   try {
+    const product = await productService.getProductByIdService(req.params.id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
 
-    const updateProduct = await productService.updateProduct(req.params.id, req.body);
-
-    if (!updateProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy sản phẩm!",
-      });
-    }
-
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const updatedProduct = await productService.updateProductService(req.params.id, req.body);
+    if (!updatedProduct) return res.status(404).json({ message: "Product not found" });
     res.status(200).json({
       success: true,
-      data: updateProduct,
+      message: "Cập nhật sản phẩm thành công",
+      updatedProduct,
     });
-  } catch (e) {
-    res.status(500).json({
-      success: false,
-      message: "Cập nhật sản phẩm thất bại!",
-    });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
+    const { deletedImages } = req.body;
+    const deleted = await productService.deleteProductService(req.params.id, deletedImages);
+    if (!deleted) return res.status(404).json({ message: "Product not found" });
+    res.json({ message: "Product deleted" });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
+  }
+};
 
-    const deleted = await productService.deleteProduct(req.params.id);
-
-    if (!deleted) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy sản phẩm để xóa!",
-      });
-    }
-
+export const toggleProductStatusController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updated = await productService.toggleProductStatusService(id);
     res.status(200).json({
       success: true,
-      message: "Sản phẩm đã được xóa thành công!",
+      message: "Toggled product status",
+      product: updated,
     });
-  } catch (e) {
-    res.status(500).json({
-      success: false,
-      message: "Xóa sản phẩm thất bại!",
-    });
+  } catch (error) {
+    res.status(500).json({ message: (error as Error).message });
   }
 };

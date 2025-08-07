@@ -3,7 +3,6 @@ import { getDashboardStatsService } from "../../services/admin/dashboard.service
 
 
 export const getDashboardStatsController = async (req: Request, res: Response) => {
-    console.log("📢 Controller: getDashboardStats called");
     try {
         const stats = await getDashboardStatsService();
         res.status(200).json({

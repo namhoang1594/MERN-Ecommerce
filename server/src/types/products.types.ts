@@ -1,20 +1,22 @@
+import { Types } from "mongoose";
 export interface IProduct {
-    image: string;
+    _id?: Types.ObjectId;
     title: string;
+    slug: string;
     description: string;
-    category: string;
-    brand: string;
+    category: Types.ObjectId;
+    brand: Types.ObjectId;
     price: number;
     salePrice?: number;
     totalStock: number;
+    image: ProductImage[];
+    createdAt?: Date;
+    updatedAt?: Date;
+    active: boolean;
+    deletedImages?: string[];
 }
 
-export interface IProductWithId extends IProduct {
-    _id: string;
-}
-
-export interface FilterQuery {
-    category?: string[];
-    brand?: string[];
-    sortBy?: string;
+export interface ProductImage {
+    url: string;
+    public_id: string;
 }

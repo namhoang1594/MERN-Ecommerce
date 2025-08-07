@@ -32,7 +32,8 @@ export const fetchAllBrands = createAsyncThunk<Brand[]>(
 export const createBrand = createAsyncThunk<Brand, IBrandPayload>(
     "/brands/createBrand",
     async (data) => {
-        const result = await axios.post("http://localhost:5000/api/admin/brands/create", data,
+        const result = await axios.post("http://localhost:5000/api/admin/brands/create",
+            data,
             {
                 headers: {
                     "Content-Type": "application/json",

@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import axios from "axios";
 import { Skeleton } from "../ui/skeleton";
 import { UploadedResult } from "@/types/config/index.types";
+import { AspectRatio } from "../ui/aspect-ratio";
 
 export type ImageUploadProps = {
   imageFile: File | null;
@@ -82,13 +83,14 @@ function ImageUpload({
 
   return (
     <div className={`w-full mt-4 ${isCustomStyling ? "" : "mx-auto max-w-md"}`}>
-      <Label className="text-lg font-semibold mb-2 block">{label}</Label>
+      <Label className="text-base font-medium mb-2 block">{label}</Label>
+
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className={`${
-          isEditMode ? "opacity-60" : ""
-        } border-2 border-dashed rounded-lg p-4`}
+        className={`border-2 border-dashed rounded-lg p-4 transition-all ${
+          isEditMode ? "opacity-60 cursor-not-allowed" : "hover:bg-muted/20"
+        }`}
       >
         <Input
           id="image-upload"
@@ -102,37 +104,36 @@ function ImageUpload({
         {!imageFile && !uploadedResult ? (
           <Label
             htmlFor="image-upload"
-            className={`${
-              isEditMode ? "cursor-not-allowed" : ""
-            } flex flex-col items-center justify-center h-32 cursor-pointer`}
+            className="flex flex-col items-center justify-center gap-2 h-32 cursor-pointer text-muted-foreground"
           >
-            <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
-            <span>Drag & drop or click to upload image</span>
+            <UploadCloudIcon className="w-8 h-8" />
+            <span>Click or drag & drop to upload image</span>
           </Label>
         ) : imageLoadingState ? (
-          <Skeleton className="h-10 bg-gray-100" />
+          <Skeleton className="h-32 w-full rounded-md" />
         ) : (
           <div className="flex items-center gap-4">
             {uploadedResult?.url && (
-              <img
-                src={uploadedResult.url}
-                alt="Uploaded"
-                className="w-20 h-20 object-contain border rounded-md"
-              />
+              <AspectRatio ratio={1} className="w-20">
+                <img
+                  src={uploadedResult.url}
+                  alt="Uploaded"
+                  className="w-full h-full object-contain rounded-md border"
+                />
+              </AspectRatio>
             )}
-
-            <div className="flex-1">
-              <p className="text-sm font-medium">
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium truncate max-w-[200px]">
                 {imageFile?.name || "Đã có ảnh"}
               </p>
               <Button
                 variant="ghost"
-                size="icon"
-                className="text-muted-foreground hover:text-foreground"
+                size="sm"
                 onClick={handleRemoveImage}
+                className="text-muted-foreground hover:text-destructive px-2"
               >
-                <XIcon className="w-4 h-4" />
-                <span className="sr-only">Remove File</span>
+                <XIcon className="w-4 h-4 mr-1" />
+                Remove
               </Button>
             </div>
           </div>

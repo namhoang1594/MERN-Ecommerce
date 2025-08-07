@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import ImageUpload from "@/components/admin-view/image-upload";
+import ImageUpload from "@/components/common/image-upload";
 import {
   createBrand,
   setCurrentBrand,

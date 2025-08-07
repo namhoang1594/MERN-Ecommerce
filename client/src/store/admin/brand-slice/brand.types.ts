@@ -1,5 +1,5 @@
 export interface Brand {
-    _id?: string;
+    _id: string;
     name: string;
     slug?: string;
     description?: string;

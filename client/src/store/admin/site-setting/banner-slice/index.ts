@@ -10,8 +10,7 @@ const initialState: BannerState = {
 export const fetchBanners = createAsyncThunk(
     "banners/fetch",
     async () => {
-        const res = await axios.get("http://localhost:5000/api/admin/settings/banners/get");
-        console.log("Banner API result:", res.data);
+        const res = await axios.get("http://localhost:5000/api/admin/banners/get");
         return res.data as IBanner[];
     });
 
@@ -19,7 +18,7 @@ export const createBanner = createAsyncThunk(
     "banners/create",
     async (formData: FormData) => {
         const res = await axios.post(
-            "http://localhost:5000/api/admin/settings/banners/create",
+            "http://localhost:5000/api/admin/banners/create",
             formData,
             {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -34,7 +33,7 @@ export const toggleBannerStatus = createAsyncThunk(
     "banners/toggleStatus",
     async ({ id, isActive }: { id: string; isActive: boolean }) => {
         const res = await axios.put(
-            `http://localhost:5000/api/admin/settings/banners/toggle/${id}`
+            `http://localhost:5000/api/admin/banners/toggle/${id}`
         );
         return res.data.banner as IBanner;
     }
@@ -44,7 +43,7 @@ export const toggleBannerStatus = createAsyncThunk(
 export const deleteBanner = createAsyncThunk(
     "banners/delete",
     async (id: string) => {
-        await axios.delete(`http://localhost:5000/api/admin/settings/banners/${id}`);
+        await axios.delete(`http://localhost:5000/api/admin/banners/${id}`);
         return id;
     });
 

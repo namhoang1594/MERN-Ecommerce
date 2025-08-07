@@ -1,20 +1,21 @@
 import { Router } from "express";
 import {
-  handleImageUpload,
-  addProduct,
-  fetchAllProduct,
-  editProduct,
-  deleteProduct
+  createProduct,
+  deleteProduct,
+  getProductById,
+  getProducts,
+  toggleProductStatusController,
+  updateProduct
 } from "../../controllers/admin/products-controller";
-import { upload } from "../../helpers/cloudinary";
+
 
 const router = Router();
 
-
-router.post("/upload-image", upload.single("my_file"), handleImageUpload);
-router.post("/add", addProduct);
-router.put("/edit/:id", editProduct);
-router.get("/get", fetchAllProduct);
-router.delete("/delete/:id", deleteProduct);
+router.post("/create", createProduct);
+router.get("/", getProducts);
+router.get("/:id", getProductById);
+router.put("/:id", updateProduct);
+router.post("/:id/delete", deleteProduct);
+router.put("/:id/toggle", toggleProductStatusController);
 
 export default router;

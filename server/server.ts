@@ -19,8 +19,8 @@ import adminCategoryRouter from "./src/routes/admin/category-routes";
 import adminBrandRouter from "./src/routes/admin/brand-routes";
 
 
-import shopProductRouter from "./src/routes/shop/products-routes";
-import shopCartRouter from "./src/routes/shop/cart-routes";
+// import shopProductRouter from "./src/routes/shop/products-routes";
+// import shopCartRouter from "./src/routes/shop/cart-routes";
 import shopAddressRouter from "./src/routes/shop/address-routes";
 import shopOrderRouter from "./src/routes/shop/order-routes";
 import shopSearchProductRouter from "./src/routes/shop/search-routes";
@@ -54,11 +54,11 @@ app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrdersRouter);
 app.use("/api/admin/categories", adminCategoryRouter);
 app.use("/api/admin/brands", adminBrandRouter);
-app.use("/api/admin/settings", bannerSetting);
+app.use("/api/admin/banners", bannerSetting);
 app.use("/api/admin/site-setting", siteSetting);
 
-app.use("/api/shop/products", shopProductRouter);
-app.use("/api/shop/cart", shopCartRouter);
+// app.use("/api/shop/products", shopProductRouter);
+// app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/shop/search", shopSearchProductRouter);

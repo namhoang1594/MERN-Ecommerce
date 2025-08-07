@@ -1,17 +1,30 @@
 import { Schema, model } from "mongoose";
 import { IProduct } from "../types/products.types";
 
-
 const productSchema = new Schema<IProduct>(
   {
-    image: String,
-    title: String,
-    description: String,
-    category: String,
-    brand: String,
-    price: Number,
-    salePrice: Number,
-    totalStock: Number,
+    title: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
+    description: { type: String },
+    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    brand: { type: Schema.Types.ObjectId, ref: "Brand", required: true },
+    price: { type: Number, required: true },
+    salePrice: { type: Number },
+    totalStock: { type: Number, required: true },
+    image: [
+      {
+        url: {
+          type: String,
+          required: true,
+        },
+        public_id: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    active: { type: Boolean, default: true },
+    deletedImages: { type: [String], default: [] }
   },
   { timestamps: true }
 );
