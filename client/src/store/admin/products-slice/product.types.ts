@@ -20,6 +20,7 @@ export interface Product {
     createdAt: string;
     updatedAt: string;
     deletedImages?: string[];
+    isFlashSale: boolean;
 }
 
 export type ProductCreatePayload = Omit<Product, "_id" | "createdAt" | "updatedAt">;
@@ -37,6 +38,7 @@ export interface ProductFormState {
     brand: string;
     active: boolean;
     deletedImages?: string[];
+    isFlashSale: boolean;
 }
 
 export interface ProductFormProps {

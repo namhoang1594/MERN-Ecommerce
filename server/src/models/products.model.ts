@@ -24,7 +24,8 @@ const productSchema = new Schema<IProduct>(
       },
     ],
     active: { type: Boolean, default: true },
-    deletedImages: { type: [String], default: [] }
+    deletedImages: { type: [String], default: [] },
+    isFlashSale: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -17,6 +17,7 @@ export const convertToPlainProduct = (
     active: data.active,
     image: data.image,
     deletedImages: data.deletedImages,
+    isFlashSale: data.isFlashSale,
   };
 };
 
@@ -33,5 +34,6 @@ export const convertProductToFormState = (data: Product): ProductFormState => {
     active: data.active,
     image: data.image,
     deletedImages: data.deletedImages,
+    isFlashSale: data.isFlashSale,
   };
 };

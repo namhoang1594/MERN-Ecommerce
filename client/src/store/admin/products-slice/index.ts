@@ -116,6 +116,18 @@ export const toggleProductStatus = createAsyncThunk(
   }
 );
 
+export const toggleFlashSaleStatus = createAsyncThunk(
+  "product/toggleFlashSaleStatus",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const res = await axios.put(`http://localhost:5000/api/admin/products/${id}/toggleFlashSale`);
+      return res.data.productFlashSale as Product;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Lỗi khi thay đổi trạng thái sản phẩm");
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "adminProducts",
   initialState,
@@ -180,6 +192,15 @@ const productSlice = createSlice({
         }
       })
       .addCase(toggleProductStatus.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(toggleFlashSaleStatus.fulfilled, (state, action) => {
+        const index = state.products.findIndex((p) => p._id === action.payload._id);
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+      })
+      .addCase(toggleFlashSaleStatus.rejected, (state, action) => {
         state.error = action.payload as string;
       });
   },

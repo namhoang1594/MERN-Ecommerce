@@ -5,7 +5,10 @@ import { ProductTableProps } from "@/store/admin/products-slice/product.types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { formatCurrency } from "@/lib/utils";
-import { toggleProductStatus } from "@/store/admin/products-slice";
+import {
+  toggleFlashSaleStatus,
+  toggleProductStatus,
+} from "@/store/admin/products-slice";
 
 export const ProductTable = ({
   products,
@@ -49,6 +52,7 @@ export const ProductTable = ({
             <th className="p-3 text-left">Giá</th>
             <th className="p-3 text-left">Kho</th>
             <th className="p-3 text-left">Hiển thị</th>
+            <th className="p-3 text-left">Flash sale</th>
             <th className="p-3 text-center">Hành động</th>
           </tr>
         </thead>
@@ -67,7 +71,7 @@ export const ProductTable = ({
                 {renderPrice(product.price, product.salePrice)}
               </td>
               <td className="p-3">{product.totalStock}</td>
-              <td className="p-3 flex items-center gap-2">
+              <td className="p-3 items-center gap-2">
                 <Switch
                   checked={product.active}
                   onCheckedChange={() =>
@@ -82,6 +86,23 @@ export const ProductTable = ({
                   }`}
                 >
                   {product.active ? "Hiển thị" : "Ẩn"}
+                </span>
+              </td>
+              <td className="p-3 items-center gap-2">
+                <Switch
+                  checked={product.isFlashSale}
+                  onCheckedChange={() =>
+                    dispatch(toggleFlashSaleStatus(product._id))
+                  }
+                />
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${
+                    product.isFlashSale
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {product.isFlashSale ? "Flash sale" : "Không"}
                 </span>
               </td>
               <td className="p-3 text-center space-x-2">

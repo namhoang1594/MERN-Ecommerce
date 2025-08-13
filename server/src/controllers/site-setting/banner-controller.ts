@@ -4,14 +4,35 @@ import { imageUploadUtil } from "../../helpers/cloudinary";
 
 
 // GET all banners
+// export const getAllBanners = async (req: Request, res: Response) => {
+//     try {
+//         const banners = await BannerModel.find(
+//             {
+//                 isActive: true,
+//                 position: "home",
+//             }
+//         ).sort({ createdAt: -1 });
+//         res.status(200).json({ data: banners });
+//     } catch (error) {
+//         res.status(500).json({ message: "Lỗi server khi lấy danh sách banner" });
+//     }
+// };
+
 export const getAllBanners = async (req: Request, res: Response) => {
     try {
-        const banners = await BannerModel.find().sort({ createdAt: -1 });
+        const { position } = req.query;
+        const filter: any = {};
+
+        if (position) filter.position = position;
+
+        const banners = await BannerModel.find(filter).sort({ createdAt: -1 });
         res.status(200).json(banners);
+        // res.status(200).json({ data: banners });
     } catch (error) {
         res.status(500).json({ message: "Lỗi server khi lấy danh sách banner" });
     }
 };
+
 
 // CREATE a new banner
 export const createBanner = async (req: Request, res: Response) => {
@@ -21,9 +42,14 @@ export const createBanner = async (req: Request, res: Response) => {
 
         const result = await imageUploadUtil(file.buffer, "banners");
 
+        const { title, link, position } = req.body;
+
         const newBanner = new BannerModel({
             image: result.secure_url,
-            public_id: result.public_id,
+            title,
+            link,
+            position,
+            isActive: true,
         });
 
         const saved = await newBanner.save();
@@ -32,6 +58,7 @@ export const createBanner = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Failed to create banner", error });
     }
 };
+
 
 // TOGGLE a banner
 export const toggleBannerStatus = async (req: Request, res: Response) => {

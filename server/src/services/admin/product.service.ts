@@ -125,3 +125,74 @@ export const toggleProductStatusService = async (productId: string) => {
 
     return updatedProduct;
 };
+
+export const getFlashSaleForShopService = async () => {
+    const products = await Product.find({ isFlashSale: true })
+        .sort({ createdAt: -1 })
+        .limit(10);
+    return products;
+};
+
+export const toggleFlashSaleStatusService = async (productId: string) => {
+    const product = await Product.findById(productId)
+        .populate("brand")
+        .populate("category");
+    if (!product) {
+        throw new Error("Product not found");
+    }
+
+    product.isFlashSale = !product.isFlashSale;
+    await product.save();
+
+    const updatedFlashSale = await Product.findById(productId)
+        .populate("brand")
+        .populate("category");
+
+    return updatedFlashSale;
+};
+
+export const getSuggestionProductsService = async (limit: number) => {
+    const count = await Product.countDocuments();
+    const randomSkip = Math.max(0, Math.floor(Math.random() * (count - limit)));
+    return Product.find()
+        .skip(randomSkip)
+        .limit(limit)
+};
+
+export const getNewArrivalProductsService = async () => {
+    const products = await Product.find()
+        .sort({ createdAt: -1 })
+        .limit(10);
+    return products;
+};
+
+export const fetchProductsForShop = async (
+    page: number = 1,
+    limit: number = 20,
+    filters: {
+        active?: boolean;
+        category?: string;
+        brand?: string;
+    }
+) => {
+    const skip = (page - 1) * limit;
+
+    const filter: any = { active: true, ...filters };
+
+    const products = await Product.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    const total = await Product.countDocuments(filter);
+
+    return {
+        products,
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    };
+};

@@ -8,7 +8,12 @@ import adminBrandSlice from "./admin/brand-slice";
 import adminBannerSlice from "./admin/site-setting/banner-slice";
 import adminSettingSlice from "./admin/site-setting/setting-slice";
 
-
+import shopBannersSlice from "./shop/home/banner-slice";
+import shopCategorySlice from "./shop/home/category-slice";
+import shopFlashSaleSlice from "./shop/home/flashSale-slice";
+import shopSuggestionProductSlice from "./shop/home/suggestionProduct-slice";
+import shopNewArrivalProductSlice from "./shop/home/newArrivalProduct-slice";
+import shopAllProductsSlice from "./shop/home/allProducts-slice";
 import shopProductsSlice from "./shop/products-slice";
 import shopCartSlice from "./shop/cart-slice";
 import shopAddressSlice from "./shop/address-slice";
@@ -28,6 +33,12 @@ const store = configureStore({
     adminCategory: adminCategorySlice,
     adminBrand: adminBrandSlice,
 
+    shopBanners: shopBannersSlice,
+    shopCategory: shopCategorySlice,
+    shopFlashSale: shopFlashSaleSlice,
+    shopSuggestionProduct: shopSuggestionProductSlice,
+    shopNewArrivalProduct: shopNewArrivalProductSlice,
+    shopAllProducts: shopAllProductsSlice,
     shopProducts: shopProductsSlice,
     shopCart: shopCartSlice,
     shopAddress: shopAddressSlice,

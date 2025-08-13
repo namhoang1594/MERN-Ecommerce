@@ -14,6 +14,7 @@ export interface IProduct {
     updatedAt?: Date;
     active: boolean;
     deletedImages?: string[];
+    isFlashSale: boolean;
 }
 
 export interface ProductImage {

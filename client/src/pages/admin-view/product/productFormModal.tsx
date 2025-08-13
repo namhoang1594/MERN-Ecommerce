@@ -38,6 +38,7 @@ const initialState: ProductFormState = {
   category: "",
   active: true,
   deletedImages: [],
+  isFlashSale: false,
 };
 
 export const ProductFormModal = ({
@@ -236,6 +237,13 @@ export const ProductFormModal = ({
                 onCheckedChange={handleSwitch}
               />
               <Label>Hiển thị sản phẩm</Label>
+            </div>
+            <div className="flex items-center space-x-3">
+              <Switch
+                checked={formData.isFlashSale}
+                onCheckedChange={handleSwitch}
+              />
+              <Label>Flash sale</Label>
             </div>
             <Button disabled={loading} onClick={handleSubmit}>
               {isEdit ? "Lưu thay đổi" : "Tạo mới"}

@@ -9,10 +9,19 @@ import {
 } from "@/store/admin/site-setting/banner-slice";
 import { IBanner } from "@/store/admin/site-setting/banner-slice/banner.types";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Trash } from "lucide-react";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/confirm-modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const BannerManager = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +31,10 @@ const BannerManager = () => {
 
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
+  const [position, setPosition] = useState<"home" | "sale" | "custom">("home");
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [selectedBannerId, setSelectedBannerId] = useState<string | null>(null);
@@ -49,12 +62,19 @@ const BannerManager = () => {
 
   const handleUpload = () => {
     if (!file) return;
+
     const formData = new FormData();
     formData.append("image", file);
+    formData.append("title", title);
+    formData.append("link", link);
+    formData.append("position", position);
 
     dispatch(createBanner(formData)).then(() => {
       setFile(null);
       setPreview(null);
+      setTitle("");
+      setLink("");
+      setPosition("home");
       dispatch(fetchBanners());
     });
   };
@@ -81,6 +101,7 @@ const BannerManager = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Quản lý Banner</h2>
+
       {/* Upload zone */}
       <div
         onDrop={handleDrop}
@@ -101,9 +122,47 @@ const BannerManager = () => {
           onChange={handleFileChange}
         />
       </div>
+
+      {/* Text inputs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="title">Tiêu đề</Label>
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="link">Đường dẫn</Label>
+          <Input
+            id="link"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <Label>Vị trí</Label>
+          <Select
+            value={position}
+            onValueChange={(val) => setPosition(val as any)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Chọn vị trí hiển thị" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="home">Trang chủ</SelectItem>
+              <SelectItem value="sale">Khuyến mãi</SelectItem>
+              <SelectItem value="custom">Tuỳ chỉnh</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <Button onClick={handleUpload} disabled={!file}>
         Upload Banner
       </Button>
+
       {/* Banner list */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {loading ? (
@@ -119,6 +178,11 @@ const BannerManager = () => {
                 alt="Banner"
                 className="w-full h-36 object-cover rounded-lg"
               />
+              <div className="mt-2 text-sm">
+                <p className="font-semibold">{b.title}</p>
+                <p className="text-gray-500">{b.link}</p>
+                <p className="text-gray-400 italic">Vị trí: {b.position}</p>
+              </div>
               <div className="mt-2 flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
                   <Switch
@@ -139,12 +203,12 @@ const BannerManager = () => {
           ))
         )}
       </div>
+
       <ConfirmModal
         open={isDialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={confirmDelete}
       />
-      ;
     </div>
   );
 };

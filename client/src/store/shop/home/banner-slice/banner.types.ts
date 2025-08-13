@@ -1,4 +1,4 @@
-export interface IBanner {
+export interface Banner {
     _id: string;
     image: string;
     title: string;
@@ -8,6 +8,7 @@ export interface IBanner {
 }
 
 export interface BannerState {
-    banners: IBanner[];
+    items: Banner[];
     loading: boolean;
+    error: string | null;
 }

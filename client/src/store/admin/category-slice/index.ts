@@ -2,8 +2,6 @@ import axios from "axios";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Category, ICategoryPayload } from "./category.types";
 
-
-
 export interface AdminCategoryState {
     isLoading: boolean;
     categoryList: Category[];
