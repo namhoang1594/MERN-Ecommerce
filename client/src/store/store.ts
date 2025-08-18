@@ -13,8 +13,8 @@ import shopCategorySlice from "./shop/home/category-slice";
 import shopFlashSaleSlice from "./shop/home/flashSale-slice";
 import shopSuggestionProductSlice from "./shop/home/suggestionProduct-slice";
 import shopNewArrivalProductSlice from "./shop/home/newArrivalProduct-slice";
-import shopAllProductsSlice from "./shop/home/allProducts-slice";
-import shopProductsSlice from "./shop/products-slice";
+import shopAllProductsSlice from "./shop/products-slice/allProducts-slice";
+import shopBrandsSlice from "./shop/products-slice/brand-slice";
 import shopCartSlice from "./shop/cart-slice";
 import shopAddressSlice from "./shop/address-slice";
 import shopOrderSlice from "./shop/order-slice";
@@ -39,7 +39,7 @@ const store = configureStore({
     shopSuggestionProduct: shopSuggestionProductSlice,
     shopNewArrivalProduct: shopNewArrivalProductSlice,
     shopAllProducts: shopAllProductsSlice,
-    shopProducts: shopProductsSlice,
+    shopBrand: shopBrandsSlice,
     shopCart: shopCartSlice,
     shopAddress: shopAddressSlice,
     shopOrder: shopOrderSlice,

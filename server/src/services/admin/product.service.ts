@@ -165,34 +165,3 @@ export const getNewArrivalProductsService = async () => {
         .limit(10);
     return products;
 };
-
-export const fetchProductsForShop = async (
-    page: number = 1,
-    limit: number = 20,
-    filters: {
-        active?: boolean;
-        category?: string;
-        brand?: string;
-    }
-) => {
-    const skip = (page - 1) * limit;
-
-    const filter: any = { active: true, ...filters };
-
-    const products = await Product.find(filter)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
-
-    const total = await Product.countDocuments(filter);
-
-    return {
-        products,
-        pagination: {
-            page,
-            limit,
-            total,
-            totalPages: Math.ceil(total / limit),
-        },
-    };
-};

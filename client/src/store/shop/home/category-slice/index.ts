@@ -11,7 +11,7 @@ const initialState: CategoryHomeState = {
 export const fetchCategoriesForShop = createAsyncThunk(
     "/categories/fetch",
     async (): Promise<Category[]> => {
-        const response = await axios.get("http://localhost:5000/api/admin/categories");
+        const response = await axios.get("http://localhost:5000/api/shop/categories/get");
         return response.data.data;
     }
 );

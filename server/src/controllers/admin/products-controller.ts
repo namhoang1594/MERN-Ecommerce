@@ -124,24 +124,3 @@ export const getNewArrivalProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: (error as Error).message });
   }
 };
-
-export const getProductsForShop = async (req: Request, res: Response) => {
-  try {
-    const page = parseInt((req.query.page as string) || "1");
-    const limit = parseInt((req.query.limit as string) || "20");
-
-    const filters: any = {};
-    if (req.query.category) {
-      filters.category = req.query.category;
-    }
-    if (req.query.brand) {
-      filters.brand = req.query.brand;
-    }
-
-    const data = await productService.fetchProductsForShop(page, limit, filters);
-
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
-  }
-};

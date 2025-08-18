@@ -3,7 +3,6 @@ import CategoryList from "./categoryListSection";
 import FlashSaleSection from "./flashSaleSection";
 import SuggestionProduct from "./suggestionProductSection";
 import NewArrivalSection from "./newArrivalSection";
-import ProductGridSection from "./allProductSection";
 
 export default function HomePage() {
   return (
@@ -19,7 +18,6 @@ export default function HomePage() {
       </section>
       <SuggestionProduct />
       <NewArrivalSection />
-      <ProductGridSection />
       <footer className="mt-10 py-10 bg-gray-100 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} E-Shop. All rights reserved.
       </footer>

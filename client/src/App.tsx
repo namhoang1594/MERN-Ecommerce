@@ -4,7 +4,7 @@ import AuthRegister from "./pages/auth/register";
 import AuthLogin from "./pages/auth/login";
 import AdminLayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
-import AdminProducts from "./pages/admin-view/products";
+import AdminProducts from "./pages/admin-view/product/products";
 import AdminOrders from "./pages/admin-view/order";
 import AdminCategory from "./pages/admin-view/category/category";
 import AdminBrand from "./pages/admin-view/brand/brand";
@@ -12,13 +12,14 @@ import BannerManager from "./pages/admin-view/site-setting/banner";
 import SiteSetting from "./pages/admin-view/site-setting/site-setting";
 
 import ShoppingLayout from "./components/shopping-view/layout";
-import ShoppingHome from "./pages/shopping-view/home";
-import ShoppingListing from "./pages/shopping-view/listing";
+import ShoppingHome from "./pages/shopping-view/home/home";
+// import ShoppingListing from "./pages/shopping-view/listing";
+import ShoppingAllProducts from "./pages/shopping-view/all-Products";
 import ShoppingCheckout from "./pages/shopping-view/checkout";
 import ShoppingAccount from "./pages/shopping-view/account";
 import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
-import SearchProducts from "./pages/shopping-view/search";
+// import SearchProducts from "./pages/shopping-view/search";
 import NotFound from "./pages/not-found";
 import UnauthPage from "./pages/unauth-page";
 import CheckAuth from "./components/common/check-auth";
@@ -52,8 +53,9 @@ const App = () => {
         {/* Public user routes (no prefix like /shop) */}
         <Route path="/" element={<ShoppingLayout />}>
           <Route index element={<ShoppingHome />} />
-          <Route path="listing" element={<ShoppingListing />} />
-          <Route path="search" element={<SearchProducts />} />
+          <Route path="products" element={<ShoppingAllProducts />} />
+          {/* <Route path="listing" element={<ShoppingListing />} />
+          <Route path="search" element={<SearchProducts />} /> */}
 
           <Route
             path="checkout"

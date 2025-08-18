@@ -110,7 +110,7 @@ const BrandPage = () => {
                   <img
                     src={brand.image?.url}
                     alt={brand.name}
-                    className="h-10 w-10 object-cover rounded"
+                    className="h-10 w-10 object-contain rounded"
                   />
                 </TableCell>
                 <TableCell>{brand.name}</TableCell>

@@ -12,14 +12,15 @@ import { connectDB } from "./src/config/db";
 import uploadImageRoutes from "./src/helpers/image-upload.routes";
 
 import authRouter from "./src/routes/auth/auth-routes";
-import adminDashboardRoutes from "./src/routes/admin/dashboard-routes";
+import adminDashboardRouter from "./src/routes/admin/dashboard-routes";
 import adminProductsRouter from "./src/routes/admin/products-routes";
 import adminOrdersRouter from "./src/routes/admin/order-routes";
 import adminCategoryRouter from "./src/routes/admin/category-routes";
 import adminBrandRouter from "./src/routes/admin/brand-routes";
 
-
-// import shopProductRouter from "./src/routes/shop/products-routes";
+import shopCategoryRouter from "./src/routes/shop/category-routes";
+import shopBrandRouter from "./src/routes/shop/brand-routes";
+import shopProductRouter from "./src/routes/shop/products-routes";
 // import shopCartRouter from "./src/routes/shop/cart-routes";
 import shopAddressRouter from "./src/routes/shop/address-routes";
 import shopOrderRouter from "./src/routes/shop/order-routes";
@@ -49,7 +50,7 @@ app.use(cookieParser());
 app.use("/api", uploadImageRoutes);
 
 app.use("/api/auth", authRouter);
-app.use("/api/admin/dashboard", adminDashboardRoutes);
+app.use("/api/admin/dashboard", adminDashboardRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrdersRouter);
 app.use("/api/admin/categories", adminCategoryRouter);
@@ -57,7 +58,9 @@ app.use("/api/admin/brands", adminBrandRouter);
 app.use("/api/admin/banners", bannerSetting);
 app.use("/api/admin/site-setting", siteSetting);
 
-// app.use("/api/shop/products", shopProductRouter);
+app.use("/api/shop/categories", shopCategoryRouter);
+app.use("/api/shop/brands", shopBrandRouter);
+app.use("/api/shop/products", shopProductRouter);
 // app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);

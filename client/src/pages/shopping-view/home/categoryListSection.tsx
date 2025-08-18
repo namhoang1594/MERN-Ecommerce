@@ -26,11 +26,26 @@ const CategoryList = () => {
     );
   }
 
+  // Thêm block "Tất cả sản phẩm"
+  const categoriesWithAll = [
+    {
+      _id: "all-products",
+      name: "Tất cả sản phẩm",
+      slug: "/products",
+      image: { url: "/images/all-products.png" },
+    },
+    ...categories,
+  ];
+
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-      {categories.map((category) => (
+      {categoriesWithAll.map((category) => (
         <Link
-          to={`/category/${category.slug}`}
+          to={
+            category._id === "all-products"
+              ? "/products"
+              : `/category/${category.slug}`
+          }
           key={category._id}
           className="flex flex-col items-center gap-2 border rounded-xl hover:shadow transition text-center p-2"
         >

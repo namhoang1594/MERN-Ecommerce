@@ -6,7 +6,6 @@ import {
   getNewArrivalProducts,
   getProductById,
   getProducts,
-  getProductsForShop,
   getSuggestionProducts,
   toggleFlashSaleStatusController,
   toggleProductStatusController,
@@ -21,7 +20,6 @@ router.get("/", getProducts);
 router.get("/flash-sale", getFlashSaleForShop);
 router.get("/suggestions", getSuggestionProducts);
 router.get("/new-arrivals", getNewArrivalProducts);
-router.get("/grid-allProduct", getProductsForShop);
 router.get("/:id", getProductById);
 router.put("/:id", updateProduct);
 router.post("/:id/delete", deleteProduct);
