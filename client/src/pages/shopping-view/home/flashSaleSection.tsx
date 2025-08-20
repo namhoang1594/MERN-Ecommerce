@@ -32,7 +32,7 @@ const FlashSaleList = () => {
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       {products.map((product) => (
         <Link
-          to={`/product/${product.slug}`}
+          to={`/products/${product.slug}`}
           key={product._id}
           className="border rounded-xl p-3 hover:shadow transition flex flex-col gap-2"
         >

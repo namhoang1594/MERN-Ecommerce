@@ -32,12 +32,12 @@ const ProductCard: FC<ProductCardProps> = ({
       </Link>
 
       <CardContent className="space-y-2 px-4 pb-4 pt-0">
-        <Link to={`/product/${slug}`}>
+        <Link to={`/products/${slug}`}>
           <h3 className="font-medium text-base line-clamp-2">{title}</h3>
         </Link>
 
         <p className="text-sm text-muted-foreground">
-          {category} • {brand}
+          {category.name} • {brand.name}
         </p>
 
         <div className="flex items-center gap-2">

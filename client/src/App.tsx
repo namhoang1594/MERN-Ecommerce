@@ -13,7 +13,7 @@ import SiteSetting from "./pages/admin-view/site-setting/site-setting";
 
 import ShoppingLayout from "./components/shopping-view/layout";
 import ShoppingHome from "./pages/shopping-view/home/home";
-// import ShoppingListing from "./pages/shopping-view/listing";
+import ShoppingProductDetails from "./pages/shopping-view/productDetails/product-Details";
 import ShoppingAllProducts from "./pages/shopping-view/all-Products";
 import ShoppingCheckout from "./pages/shopping-view/checkout";
 import ShoppingAccount from "./pages/shopping-view/account";
@@ -54,8 +54,7 @@ const App = () => {
         <Route path="/" element={<ShoppingLayout />}>
           <Route index element={<ShoppingHome />} />
           <Route path="products" element={<ShoppingAllProducts />} />
-          {/* <Route path="listing" element={<ShoppingListing />} />
-          <Route path="search" element={<SearchProducts />} /> */}
+          <Route path="products/:slug" element={<ShoppingProductDetails />} />
 
           <Route
             path="checkout"

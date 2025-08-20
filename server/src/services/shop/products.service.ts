@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import Product from "../../models/products.model";
 
 export const getProducts = async (query: any) => {
@@ -14,29 +15,24 @@ export const getProducts = async (query: any) => {
 
     const filter: any = {};
 
-    // Tìm kiếm theo tên
     if (search) {
         filter.name = { $regex: search, $options: "i" };
     }
 
-    // Lọc theo category
     if (category) {
         filter.category = category;
     }
 
-    // Lọc theo brand
     if (brand) {
         filter.brand = brand;
     }
 
-    // Lọc theo khoảng giá
     if (priceMin || priceMax) {
         filter.price = {};
         if (priceMin) filter.price.$gte = Number(priceMin);
         if (priceMax) filter.price.$lte = Number(priceMax);
     }
 
-    // Sắp xếp
     let sortOption: Record<string, 1 | -1> = { createdAt: -1 };
     if (sort) {
         switch (sort) {
@@ -71,4 +67,31 @@ export const getProducts = async (query: any) => {
         page: Number(page),
         totalPages: Math.ceil(total / Number(limit)),
     };
+};
+
+export const findProductBySlugOrId = async (slugOrId: string) => {
+    let product = await Product.findOne({ slug: slugOrId })
+        .populate("category")
+        .populate("brand");
+
+    if (!product) {
+        product = await Product.findById(slugOrId)
+            .populate("category")
+            .populate("brand");
+    }
+
+    return product;
+};
+
+export const findRelatedProducts = async (
+    categoryId: Types.ObjectId,
+    excludeId: Types.ObjectId,
+    limit = 6
+) => {
+    return Product.find({
+        category: categoryId,
+        _id: { $ne: excludeId },
+    })
+        .populate("brand")
+        .limit(limit);
 };

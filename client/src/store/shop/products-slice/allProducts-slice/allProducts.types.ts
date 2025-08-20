@@ -46,9 +46,37 @@ export interface ProductCardProps {
         url: string;
         public_id: string;
     }[];
-    category: string;
-    brand: string;
+    category: {
+        _id: string;
+        name: string
+    };
+    brand: {
+        _id: string;
+        name: string
+    };
     price: number;
     salePrice?: number;
     onAddToCart: (id: string) => void;
 }
+
+export interface ProductDetail extends ShopProduct {
+    description: string;
+    totalStock: number;
+    specs?: Record<string, string>;
+    rating?: number;
+    reviews?: number;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface ProductDetailResponse {
+    product: ProductDetail;
+    relatedProducts: ShopProduct[];
+}
+
+export interface ProductDetailState {
+    data: ProductDetailResponse | null;
+    loading: boolean;
+    error: string | null;
+}
+

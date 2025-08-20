@@ -83,7 +83,7 @@ export default function ProductsPage() {
                 <ProductCard
                   key={product._id}
                   _id={product._id}
-                  slug={product.slug} // cần BE populate hoặc FE tạo
+                  slug={product.slug}
                   title={product.title}
                   image={product.image}
                   category={product.category?.name || ""}
