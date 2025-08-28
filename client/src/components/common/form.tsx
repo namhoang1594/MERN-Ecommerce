@@ -1,148 +1,135 @@
-import React from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { FormControl } from "@/types/config/index.types";
+import { FormEvent, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectItem,
-} from "../ui/select";
-import { Textarea } from "../ui/textarea";
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
-export interface FormControlItem {
-  name: string;
-  label: string;
-  placeholder?: string;
-  type?: string;
-  componentType: "input" | "select" | "textarea";
-  id?: string;
-  options?: Array<{
-    id: string;
-    label: string;
-  }>;
+interface Props {
+  controls: FormControl[];
+  onSubmit: (values: Record<string, string>) => void;
+  submitText?: string;
+  loading?: boolean;
+  errors?: Record<string, string>; // từ BE
 }
 
-// ✅ Refactor dùng generic T
-interface CommonFormProps<T extends Record<string, any>> {
-  formControls: FormControlItem[];
-  formData: T;
-  setFormData: React.Dispatch<React.SetStateAction<T>>;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  buttonText?: string;
-  isBtnDisabled?: boolean;
-}
-
-// ✅ Refactor renderInputByComponentType cũng nhận generic T
-function renderInputByComponentType<T extends Record<string, any>>(
-  getControlItem: FormControlItem,
-  formData: T,
-  setFormData: React.Dispatch<React.SetStateAction<T>>
-): React.ReactNode {
-  const value = formData[getControlItem.name] ?? "";
-
-  switch (getControlItem.componentType) {
-    case "input":
-      return (
-        <Input
-          id={getControlItem.name}
-          name={getControlItem.name}
-          placeholder={getControlItem.placeholder}
-          type={getControlItem.type}
-          value={value}
-          onChange={(event) =>
-            setFormData((prev) => ({
-              ...prev,
-              [getControlItem.name]: event.target.value,
-            }))
-          }
-        />
-      );
-
-    case "select":
-      return (
-        <Select
-          value={value}
-          onValueChange={(value) =>
-            setFormData((prev) => ({
-              ...prev,
-              [getControlItem.name]: value,
-            }))
-          }
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder={getControlItem.label} />
-          </SelectTrigger>
-          <SelectContent>
-            {getControlItem.options?.map((optionItem) => (
-              <SelectItem key={optionItem.id} value={optionItem.id}>
-                {optionItem.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      );
-
-    case "textarea":
-      return (
-        <Textarea
-          id={getControlItem.id}
-          name={getControlItem.name}
-          placeholder={getControlItem.placeholder}
-          value={value}
-          onChange={(event) =>
-            setFormData((prev) => ({
-              ...prev,
-              [getControlItem.name]: event.target.value,
-            }))
-          }
-        />
-      );
-
-    default:
-      return (
-        <Input
-          id={getControlItem.name}
-          name={getControlItem.name}
-          placeholder={getControlItem.placeholder}
-          type={getControlItem.type}
-          value={value}
-          onChange={(event) =>
-            setFormData((prev) => ({
-              ...prev,
-              [getControlItem.name]: event.target.value,
-            }))
-          }
-        />
-      );
-  }
-}
-
-// ✅ Refactor function chính
-function CommonForm<T extends Record<string, any>>({
-  formControls,
-  formData,
-  setFormData,
+export default function Form({
+  controls,
   onSubmit,
-  buttonText,
-  isBtnDisabled,
-}: CommonFormProps<T>): React.ReactElement {
+  submitText = "Xác nhận",
+  loading,
+  errors: serverErrors,
+}: Props) {
+  const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
+
+  const validateField = (
+    value: string,
+    allValues: Record<string, string>,
+    rules?: FormControl["rules"]
+  ) => {
+    if (!rules) return;
+    for (const rule of rules) {
+      switch (rule.type) {
+        case "required":
+          if (!value) return rule.message || "Trường này là bắt buộc";
+          break;
+        case "min":
+          if (value.length < Number(rule.value))
+            return rule.message || `Tối thiểu ${rule.value} ký tự`;
+          break;
+        case "max":
+          if (value.length > Number(rule.value))
+            return rule.message || `Tối đa ${rule.value} ký tự`;
+          break;
+        case "pattern":
+          if (rule.value instanceof RegExp && !rule.value.test(value))
+            return rule.message || "Định dạng không hợp lệ";
+          break;
+        case "match":
+          if (value !== allValues[String(rule.value)])
+            return rule.message || "Giá trị không khớp";
+          break;
+      }
+    }
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const values: Record<string, string> = {};
+    controls.forEach((c) => {
+      values[c.name] = (formData.get(c.name) as string) || "";
+    });
+
+    // validate client theo config
+    const newErrors: Record<string, string> = {};
+    controls.forEach((c) => {
+      const msg = validateField(values[c.name], values, c.rules);
+      if (msg) newErrors[c.name] = msg;
+    });
+
+    if (Object.keys(newErrors).length) {
+      setClientErrors(newErrors);
+      return;
+    }
+
+    setClientErrors({});
+    onSubmit(values);
+  };
+
   return (
-    <form onSubmit={onSubmit}>
-      <div className="flex flex-col gap-3">
-        {formControls.map((controlItem) => (
-          <div className="grid w-full gap-1.5" key={controlItem.name}>
-            <Label className="mb-1">{controlItem.label}</Label>
-            {renderInputByComponentType(controlItem, formData, setFormData)}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {controls.map((control) => {
+        const errorMsg =
+          clientErrors[control.name] || serverErrors?.[control.name];
+        return (
+          <div key={control.name} className="space-y-2">
+            <Label htmlFor={control.name}>{control.label}</Label>
+            {control.type === "textarea" ? (
+              <Textarea
+                id={control.name}
+                name={control.name}
+                placeholder={control.placeholder}
+                className={errorMsg ? "border-red-500" : ""}
+              />
+            ) : control.type === "select" ? (
+              <Select name={control.name}>
+                <SelectTrigger>
+                  <SelectValue placeholder={control.placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  {control.options?.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                id={control.name}
+                name={control.name}
+                type={control.type}
+                placeholder={control.placeholder}
+                className={errorMsg ? "border-red-500" : ""}
+              />
+            )}
+            {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
           </div>
-        ))}
-      </div>
-      <Button className="mt-2 w-full" type="submit" disabled={isBtnDisabled}>
-        {buttonText || "Submit"}
+        );
+      })}
+      <Button type="submit" disabled={loading} className="w-full">
+        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {submitText}
       </Button>
     </form>
   );
 }
-
-export default CommonForm;

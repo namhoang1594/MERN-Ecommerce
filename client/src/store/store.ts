@@ -21,11 +21,24 @@ import shopAddressSlice from "./shop/address-slice";
 import shopOrderSlice from "./shop/order-slice";
 import shopSearchProductSlice from "./shop/search-slice";
 import shopReviewProductSlice from "./shop/review-product-slice";
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from "redux-persist";
+import { setupAxiosInterceptors } from "@/lib/axios-intercepter";
 
 
-const store = configureStore({
+const persistConfig = {
+  key: 'auth',
+  storage,
+  whitelist: ['user'], // CHỈ lưu user info, KHÔNG lưu accessToken
+};
+
+const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+
+
+export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth: persistedAuthReducer,
+
     adminDashboard: adminDashboardSlice,
     adminProducts: adminProductsSlice,
     adminOrder: adminOrderSlice,
@@ -48,8 +61,19 @@ const store = configureStore({
     shopSearchProduct: shopSearchProductSlice,
     shopReviewProduct: shopReviewProductSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      },
+    }),
 });
+
+setupAxiosInterceptors();
+
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-export default store;
+

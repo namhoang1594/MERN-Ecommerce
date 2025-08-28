@@ -1,102 +1,134 @@
 import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
-import { generateToken } from "../../helpers/jwt";
-import { findUserByEmail, createUser } from "../../services/user.service";
-import { IUser } from "../../types/user.types";
+import { loginUserService, logoutUserService, refreshTokenUserService, registerUserService } from "../../services/auth/user.service";
 
-
+/**
+ * POST /api/auth/register
+ */
 export const registerUser = async (req: Request, res: Response) => {
-  const { userName, email, password } = req.body;
-
   try {
-    const existing = await findUserByEmail(email);
-    if (existing)
-      return res.status(400).json({
-        success: false,
-        message: "Email đã tồn tại! Vui lòng sử dụng email khác.",
-      });
+    const { name, email, password } = req.body;
 
-    const hashed = await bcrypt.hash(password, 12);
-    await createUser({ userName, email, password: hashed });
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
 
-    res.status(201).json({
-      success: true,
-      message: "Đăng ký thành công! Vui lòng đăng nhập.",
+    const newUser = await registerUserService(name, email, password);
+
+    // Có thể auto login sau register → generate token
+    const { accessToken, refreshToken } = await loginUserService(email, password);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
-  } catch (e) {
-    res.status(500).json({
-      success: false,
-      message: "Máy chủ đang bận! Vui lòng thử lại sau.",
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+      },
+      accessToken,
     });
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
   }
 };
 
+/**
+ * POST /api/auth/login
+ */
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-
   try {
-    const user = await findUserByEmail(email);
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Tài khoản không tồn tại! Vui lòng đăng ký.",
-      });
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Missing email or password" });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Mật khẩu không chính xác! Vui lòng thử lại.",
-      });
-    }
+    const { user, accessToken, refreshToken } = await loginUserService(email, password);
 
-    const token = generateToken({
-      id: user._id,
-      userName: user.userName,
-      role: user.role,
-      email: user.email,
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
 
-    res.cookie("token", token, { httpOnly: true }).json({
-      success: true,
-      message: "Đăng nhập thành công!",
+    return res.status(200).json({
+      message: "Login successful",
       user: {
         id: user._id,
-        userName: user.userName,
-        role: user.role,
+        name: user.name,
         email: user.email,
+        role: user.role,
       },
+      accessToken,
     });
-  } catch {
-    res.status(500).
-      json({
-        success: false,
-        message: "Đăng nhập thất bại! Máy chủ đang bận.",
-      });
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
   }
 };
 
-export const logoutUser = (req: Request, res: Response) => {
-  res.clearCookie("token").status(200).json({
-    success: true,
-    message: "Đăng xuất thành công!",
-  });
-};
+/**
+ * POST /api/auth/refresh
+ */
+export const refreshUser = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
 
-export const checkAuth = (req: Request, res: Response) => {
-  const user = req.user as IUser;
-  if (!user) {
-    return res.status(401).json({
-      success: false,
-      message: "Bạn chưa đăng nhập!",
+    if (!refreshToken) {
+      return res.status(401).json({ message: "No refresh token provided" });
+    }
+
+    const { accessToken, refreshToken: newRefreshToken } = await refreshTokenUserService(refreshToken);
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
-  }
 
-  res.status(200).json({
-    success: true,
-    message: "Người dùng đã được xác thực!",
-    user,
-  });
+    return res.status(200).json({
+      message: "Token refreshed successfully",
+      accessToken,
+    });
+  } catch (error: any) {
+    return res.status(401).json({ message: error.message });
+  }
 }
 
+/**
+ * POST /api/auth/logout
+ */
+export const logoutUser = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(400).json({ message: "No refresh token provided" });
+    }
+
+    if (!req.user?._id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const userId = req.user?._id;
+
+    await logoutUserService(userId, refreshToken);
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // chỉ bật secure khi production
+      sameSite: "strict",
+    });
+
+    res.json({ message: "Logged out successfully" });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};

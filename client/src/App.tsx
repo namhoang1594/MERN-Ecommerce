@@ -1,7 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import AuthLayout from "./components/auth/layout";
-import AuthRegister from "./pages/auth/register";
-import AuthLogin from "./pages/auth/login";
+
+import AuthLayout from "./components/auth/authLayout";
+import LoginPage from "./pages/auth/login";
+import RegisterPage from "./pages/auth/register";
+
 import AdminLayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
 import AdminProducts from "./pages/admin-view/product/products";
@@ -15,38 +17,12 @@ import ShoppingLayout from "./components/shopping-view/layout";
 import ShoppingHome from "./pages/shopping-view/home/home";
 import ShoppingProductDetails from "./pages/shopping-view/productDetails/product-Details";
 import ShoppingAllProducts from "./pages/shopping-view/all-Products";
-import ShoppingCheckout from "./pages/shopping-view/checkout";
-import ShoppingAccount from "./pages/shopping-view/account";
-import PaypalReturnPage from "./pages/shopping-view/paypal-return";
-import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 // import SearchProducts from "./pages/shopping-view/search";
-import NotFound from "./pages/not-found";
-import UnauthPage from "./pages/unauth-page";
-import CheckAuth from "./components/common/check-auth";
-import PrivateRoute from "./components/common/private-route";
-import AdminRoute from "./components/common/admin-route";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { checkAuth, setUser } from "./store/auth-slice";
-import { AppDispatch, RootState } from "./store/store";
-import { Skeleton } from "./components/ui/skeleton";
+
+import ProtectedRoute from "./components/auth/protectedGuard";
+import RoleGuard from "./components/auth/roleGuard";
 
 const App = () => {
-  const { user, isAuthenticated, isLoading } = useSelector(
-    (state: RootState) => state.auth
-  );
-  const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      dispatch(setUser(JSON.parse(storedUser)));
-    }
-    dispatch(checkAuth());
-  }, [dispatch]);
-
-  if (isLoading) return <Skeleton className="h-[600px] w-[800px] bg-black" />;
-
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
@@ -55,124 +31,34 @@ const App = () => {
           <Route index element={<ShoppingHome />} />
           <Route path="products" element={<ShoppingAllProducts />} />
           <Route path="products/:slug" element={<ShoppingProductDetails />} />
-
-          <Route
-            path="checkout"
-            element={
-              <PrivateRoute>
-                <ShoppingCheckout />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="account"
-            element={
-              <PrivateRoute>
-                <ShoppingAccount />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="paypal-return"
-            element={
-              <PrivateRoute>
-                <PaypalReturnPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="payment-success"
-            element={
-              <PrivateRoute>
-                <PaymentSuccessPage />
-              </PrivateRoute>
-            }
-          />
         </Route>
 
         {/* Auth routes */}
-        <Route
-          path="/auth"
-          element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <AuthLayout />
-            </CheckAuth>
-          }
-        >
-          <Route path="login" element={<AuthLogin />} />
-          <Route path="register" element={<AuthRegister />} />
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
         </Route>
 
         {/* Admin routes */}
         <Route
           path="/admin"
           element={
-            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
-              <AdminLayout />
-            </CheckAuth>
+            <ProtectedRoute>
+              <RoleGuard allowedRoles={["admin"]}>
+                <AdminLayout />
+              </RoleGuard>
+            </ProtectedRoute>
           }
         >
-          <Route
-            path="dashboard"
-            element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="products"
-            element={
-              <AdminRoute>
-                <AdminProducts />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="orders"
-            element={
-              <AdminRoute>
-                <AdminOrders />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="categories"
-            element={
-              <AdminRoute>
-                <AdminCategory />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="brands"
-            element={
-              <AdminRoute>
-                <AdminBrand />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="banner"
-            element={
-              <AdminRoute>
-                <BannerManager />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="site-setting"
-            element={
-              <AdminRoute>
-                <SiteSetting />
-              </AdminRoute>
-            }
-          />
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="categories" element={<AdminCategory />} />
+          <Route path="brands" element={<AdminBrand />} />
+          <Route path="banner" element={<BannerManager />} />
+          <Route path="site-setting" element={<SiteSetting />} />
         </Route>
-
-        {/* Other routes */}
-        <Route path="/unauth-page" element={<UnauthPage />} />
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

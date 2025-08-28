@@ -1,21 +1,45 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyToken } from "../../helpers/jwt";
-import { AuthPayload } from "../../types/auth-payload.types";
+import UserModel from "../../models/user.model";
+import { JwtPayload } from "jsonwebtoken";
+import { verifyAccessToken } from "../../services/auth/token.service";
 
-export const authMiddleware = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    const token = req.cookies.token;
-    if (!token)
-        return res.status(401).json({ success: false, message: "Unauthorized" });
-
+/**
+ * Middleware: verify access token
+ */
+export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const decoded = verifyToken(token) as AuthPayload;
-        req.user = decoded;
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        const token = authHeader.split(" ")[1];
+        const decoded = verifyAccessToken(token) as JwtPayload;
+
+        // Tìm user trong DB để chắc chắn user vẫn tồn tại
+        const user = await UserModel.findById(decoded.userId).select("_id role isActive");
+        if (!user || !user.isActive) {
+            return res.status(401).json({ message: "User not found or inactive" });
+        }
+
+        req.user = {
+            _id: user._id.toString(),
+            role: user.role,
+        };
+
         next();
-    } catch {
-        res.status(401).json({ success: false, message: "Invalid token" });
+    } catch (error: any) {
+        return res.status(401).json({ message: "Invalid or expired token" });
     }
 };
+
+/**
+ * Middleware: check role (admin)
+ */
+export const requireAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    if (req.user?.role !== "admin") {
+        return res.status(403).json({ message: "Access denied: admin only" });
+    }
+    next();
+}
+

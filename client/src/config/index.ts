@@ -1,198 +1,46 @@
-import {
-  FormControlItem,
-  OptionItem,
-  HeaderMenuItem,
-  FilterOptions,
-  CategoryOptionKey,
-  BrandOptionKey,
-} from "../types/config/index.types";
+import { FormControl } from "@/types/config/index.types";
 
-export const registerFormControls: FormControlItem[] = [
+
+export const loginFormControls: FormControl[] = [
   {
-    name: "userName",
-    label: "User Name",
-    placeholder: "Enter your user name",
-    componentType: "input",
-    type: "text",
-  },
-  {
+    type: "email",
     name: "email",
     label: "Email",
-    placeholder: "Enter your email",
-    componentType: "input",
-    type: "email",
-  },
-  {
-    name: "password",
-    label: "Password",
-    placeholder: "Enter your password",
-    componentType: "input",
-    type: "password",
-  },
-];
-
-export const loginFormControls: FormControlItem[] = [
-  {
-    name: "email",
-    label: "Email",
-    placeholder: "Enter your email",
-    componentType: "input",
-    type: "email",
-  },
-  {
-    name: "password",
-    label: "Password",
-    placeholder: "Enter your password",
-    componentType: "input",
-    type: "password",
-  },
-];
-
-export const addProductFormElements: FormControlItem[] = [
-  {
-    label: "Title",
-    name: "title",
-    componentType: "input",
-    type: "text",
-    placeholder: "Enter product title",
-  },
-  {
-    label: "Description",
-    name: "description",
-    componentType: "textarea",
-    placeholder: "Enter product description",
-  },
-  {
-    label: "Category",
-    name: "category",
-    componentType: "select",
-    options: [
-      { id: "man", label: "Man" },
-      { id: "woman", label: "Woman" },
-      { id: "kids", label: "Kids" },
-      { id: "accessories", label: "Accessories" },
-      { id: "footwear", label: "Footwear" },
+    placeholder: "Nhập email",
+    rules: [
+      { type: "required", message: "Vui lòng nhập email" },
+      { type: "pattern", value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Email không hợp lệ" },
     ],
   },
   {
-    label: "Brand",
-    name: "brand",
-    componentType: "select",
-    options: [
-      { id: "nike", label: "Nike" },
-      { id: "adidas", label: "Adidas" },
-      { id: "gucci", label: "Gucci" },
-      { id: "dior", label: "Dior" },
-      { id: "h&m", label: "H&M" },
+    type: "password",
+    name: "password",
+    label: "Mật khẩu",
+    placeholder: "Nhập mật khẩu",
+    rules: [
+      { type: "required", message: "Vui lòng nhập mật khẩu" },
+      { type: "min", value: 6, message: "Mật khẩu tối thiểu 6 ký tự" },
     ],
   },
-  {
-    label: "Price",
-    name: "price",
-    componentType: "input",
-    type: "number",
-    placeholder: "Enter product price",
-  },
-  {
-    label: "Sale Price",
-    name: "salePrice",
-    componentType: "input",
-    type: "number",
-    placeholder: "Enter sale price",
-  },
-  {
-    label: "Total Stock",
-    name: "totalStock",
-    componentType: "input",
-    type: "text",
-    placeholder: "Enter total stock",
-  },
 ];
 
-export const addressFormControls: FormControlItem[] = [
+export const registerFormControls: FormControl[] = [
   {
-    label: "Address",
-    name: "address",
-    componentType: "input",
     type: "text",
-    placeholder: "Enter your address",
+    name: "name",
+    label: "Họ và tên",
+    placeholder: "Nhập họ và tên",
+    rules: [{ type: "required", message: "Vui lòng nhập họ và tên" }],
   },
+  ...loginFormControls,
   {
-    label: "City",
-    name: "city",
-    componentType: "input",
-    type: "text",
-    placeholder: "Enter your city",
-  },
-  {
-    label: "Pincode",
-    name: "pincode",
-    componentType: "input",
-    type: "text",
-    placeholder: "Enter your pincode",
-  },
-  {
-    label: "Phone",
-    name: "phone",
-    componentType: "input",
-    type: "text",
-    placeholder: "Enter your phone number",
-  },
-  {
-    label: "Notes",
-    name: "notes",
-    componentType: "textarea",
-    placeholder: "Enter any additional notes",
+    type: "password",
+    name: "confirmPassword",
+    label: "Xác nhận mật khẩu",
+    placeholder: "Nhập lại mật khẩu",
+    rules: [
+      { type: "required", message: "Vui lòng xác nhận mật khẩu" },
+      { type: "match", value: "password", message: "Mật khẩu không khớp" },
+    ],
   },
 ];
-
-export const shoppingViewHeaderMenuItems: HeaderMenuItem[] = [
-  { id: "home", label: "Home", path: "/" },
-  { id: "products", label: "Products", path: "/listing" },
-  { id: "man", label: "Man", path: "/listing" },
-  { id: "woman", label: "Woman", path: "/listing" },
-  { id: "kids", label: "Kids", path: "/listing" },
-  { id: "accessories", label: "Accessories", path: "/listing" },
-  { id: "footwear", label: "Footwear", path: "/listing" },
-  { id: "search", label: "Search", path: "/search" },
-];
-
-export const filterOptions: FilterOptions = {
-  category: [
-    { id: "man", label: "Man" },
-    { id: "woman", label: "Woman" },
-    { id: "kids", label: "Kids" },
-    { id: "accessories", label: "Accessories" },
-    { id: "footwear", label: "Footwear" },
-  ],
-  brand: [
-    { id: "nike", label: "Nike" },
-    { id: "adidas", label: "Adidas" },
-    { id: "gucci", label: "Gucci" },
-    { id: "dior", label: "Dior" },
-    { id: "h&m", label: "H&M" },
-  ],
-};
-
-export const sortOptions: OptionItem[] = [
-  { id: "price-lowtohigh", label: "Price: Low to High" },
-  { id: "price-hightolow", label: "Price: High to Low" },
-  { id: "title-atoz", label: "Title: A to Z" },
-  { id: "title-ztoa", label: "Title: Z to A" },
-];
-
-export const categoryOptionsMap: Record<CategoryOptionKey, string> = {
-  man: "Man",
-  woman: "Woman",
-  kids: "Kids",
-  accessories: "Accessories",
-  footwear: "Footwear",
-};
-
-export const brandOptionsMap: Record<BrandOptionKey, string> = {
-  nike: "Nike",
-  adidas: "Adidas",
-  gucci: "Gucci",
-  dior: "Dior",
-  "h&m": "H&m",
-};

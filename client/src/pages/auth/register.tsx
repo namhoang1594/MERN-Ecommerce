@@ -1,62 +1,72 @@
-import { useState, FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-
-import CommonForm from "@/components/common/form";
-import { registerFormControls } from "@/config";
-import { registerUser } from "@/store/auth-slice";
 import { AppDispatch } from "@/store/store";
-import { RegisterFormData } from "../../store/auth-slice/auth.types";
+import { registerUser } from "@/store/auth-slice";
+import Form from "@/components/common/form";
+import { registerFormControls } from "@/config";
+import LoadingPage from "@/components/common/loading-page";
+import { useAuth } from "@/hooks/useAuth";
 
-const initialState: RegisterFormData = {
-  userName: "",
-  email: "",
-  password: "",
-};
-
-function AuthRegister() {
-  const [formData, setFormData] = useState<RegisterFormData>(initialState);
+export default function RegisterPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { user, loading, error, isAuthenticated } = useAuth(); // Sử dụng hook sẵn có
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    dispatch(registerUser(formData)).then((data) => {
-      if (data?.payload?.success) {
-        toast.success(data.payload.message);
-        navigate("/auth/login");
-      } else {
-        toast.error(data?.payload?.message);
-      }
-    });
+  // Nếu auto login xong → redirect theo role
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const redirectPath = user.role === "admin" ? "/admin/dashboard" : "/";
+      navigate(redirectPath, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  const handleSubmit = async (values: Record<string, string>) => {
+    setFormErrors({});
+    const { confirmPassword, ...submitData } = values;
+    const res = await dispatch(
+      registerUser(
+        submitData as { name: string; email: string; password: string }
+      )
+    );
+
+    if (registerUser.rejected.match(res)) {
+      const payload = res.payload as any;
+      setFormErrors(payload?.fieldErrors || {});
+    }
   };
 
+  if (loading) return <LoadingPage />;
+
   return (
-    <div className="mx-auto w-full max-w-md space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Create new account
-        </h1>
-        <p className="mt-2">
-          Already have an account{" "}
+    <div className="p-6 bg-white rounded-2xl shadow-sm">
+      <h1 className="text-2xl font-semibold mb-4 text-center">Đăng ký</h1>
+
+      <Form
+        controls={registerFormControls}
+        onSubmit={handleSubmit}
+        submitText="Đăng ký"
+        loading={loading}
+        errors={formErrors}
+      />
+
+      {error && (
+        <p className="text-red-500 text-sm mt-3 text-center">{error}</p>
+      )}
+
+      {/* Links */}
+      <div className="mt-6 text-center space-y-2">
+        <p className="text-sm text-gray-600">
+          Đã có tài khoản?{" "}
           <Link
-            className="font-medium text-primary hover:underline"
             to="/auth/login"
+            className="text-indigo-600 font-medium hover:underline"
           >
-            Login
+            Đăng nhập ngay
           </Link>
         </p>
       </div>
-      <CommonForm
-        formControls={registerFormControls}
-        buttonText="Sign Up"
-        formData={formData}
-        setFormData={setFormData}
-        onSubmit={onSubmit}
-      />
     </div>
   );
 }
-
-export default AuthRegister;

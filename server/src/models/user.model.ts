@@ -1,38 +1,50 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
+import { IUser, UserRole } from "../types/user.types";
 
-export interface IUser extends Document {
-  userName: string;
-  email: string;
-  password: string;
-  role?: string;
-}
-
-const userSchema = new Schema<IUser>(
+const UserSchema = new Schema<IUser>(
   {
-    userName: {
+    name: {
       type: String,
       required: true,
-      unique: true,
+      trim: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true, // đảm bảo không trùng email
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
       required: true,
+      minlength: 6, // rule cơ bản
     },
     role: {
       type: String,
-      default: "user",
+      enum: Object.values(UserRole),
+      default: UserRole.CUSTOMER,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    cart: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Product", // ref sang Product model (tạm để vậy, sau có thể thay Cart model)
+      },
+    ],
+    refreshTokens: [
+      {
+        type: String,
+      },
+    ],
   },
   {
-    timestamps: true,
+    timestamps: true, // auto thêm createdAt, updatedAt
   }
 );
 
-const User = model<IUser>("User", userSchema);
-
-export default User;
+const UserModel = model<IUser>("User", UserSchema);
+export default UserModel;

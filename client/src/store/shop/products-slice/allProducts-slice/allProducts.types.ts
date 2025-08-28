@@ -46,14 +46,8 @@ export interface ProductCardProps {
         url: string;
         public_id: string;
     }[];
-    category: {
-        _id: string;
-        name: string
-    };
-    brand: {
-        _id: string;
-        name: string
-    };
+    category: string;
+    brand: string;
     price: number;
     salePrice?: number;
     onAddToCart: (id: string) => void;

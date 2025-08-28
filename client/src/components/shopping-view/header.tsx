@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ShoppingCart, UserCircle2, LogOutIcon, LogInIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,14 +6,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
+import { logoutUser } from "@/store/auth-slice";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ShopHeader() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Mock trạng thái login
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth(); // Mock trạng thái login
   const cartCount = 3; // Mock số lượng trong giỏ
 
-  const handleLoginLogout = () => {
-    setIsLoggedIn(!isLoggedIn);
+  const handleLogin = () => {
+    navigate("/auth/login");
+  };
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    navigate("/auth/login");
   };
 
   return (
@@ -37,8 +47,8 @@ export default function ShopHeader() {
         </Link>
 
         {/* Auth */}
-        {!isLoggedIn ? (
-          <Button variant="outline" size="sm" onClick={handleLoginLogout}>
+        {!isAuthenticated ? (
+          <Button variant="outline" size="sm" onClick={handleLogin}>
             <LogInIcon className="w-4 h-4 mr-1" />
             Đăng nhập
           </Button>
@@ -51,17 +61,17 @@ export default function ShopHeader() {
                 className="flex items-center gap-1"
               >
                 <UserCircle2 className="w-5 h-5" />
-                <span className="hidden sm:inline">Tài khoản</span>
+                <span className="hidden sm:inline">
+                  {" "}
+                  {user?.name || "Tài khoản"}
+                </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link to="/profile">Thông tin cá nhân</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
                 <Link to="/orders">Đơn mua</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleLoginLogout}>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOutIcon className="w-4 h-4 mr-2" />
                 Đăng xuất
               </DropdownMenuItem>
