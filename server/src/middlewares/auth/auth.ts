@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import UserModel from "../../models/user.model";
 import { JwtPayload } from "jsonwebtoken";
 import { verifyAccessToken } from "../../services/auth/token.service";
+import { UserRole } from "../../types/user.types";
 
 /**
  * Middleware: verify access token
@@ -37,8 +38,8 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
  * Middleware: check role (admin)
  */
 export const requireAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    if (req.user?.role !== "admin") {
-        return res.status(403).json({ message: "Access denied: admin only" });
+    if (req.user?.role !== UserRole.ADMIN) {
+        return res.status(403).json({ message: "Access denied: Admin Only" });
     }
     next();
 }

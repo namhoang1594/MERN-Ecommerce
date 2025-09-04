@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { loginUserService, logoutUserService, refreshTokenUserService, registerUserService } from "../../services/auth/user.service";
+import { loginUserService, logoutUserService, refreshTokenUserService, registerUserService } from "../../services/auth/auth.service";
 
 /**
  * POST /api/auth/register

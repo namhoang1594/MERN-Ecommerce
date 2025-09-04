@@ -7,6 +7,7 @@ import {
   SettingsIcon,
   List,
   BriefcaseBusiness,
+  UserIcon,
 } from "lucide-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
@@ -49,6 +50,12 @@ const adminSidebarMenuItems: AdminSidebarMenuItem[] = [
     label: "Brand",
     path: "/admin/brands",
     icon: <BriefcaseBusiness />,
+  },
+  {
+    id: "users",
+    label: "Users Management",
+    path: "/admin/users",
+    icon: <UserIcon />,
   },
   {
     id: "banners",
