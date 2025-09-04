@@ -1,8 +1,9 @@
+export type UserRole = "customer" | "admin";
 export interface User {
     _id: string;
     email: string;
     name: string;
-    role: "customer" | "admin";
+    role: UserRole;
 }
 
 export interface AuthState {

@@ -18,7 +18,8 @@ interface Props {
   onSubmit: (values: Record<string, string>) => void;
   submitText?: string;
   loading?: boolean;
-  errors?: Record<string, string>; // từ BE
+  errors?: Record<string, string>;
+  defaultValues?: Record<string, string>;
 }
 
 export default function Form({
@@ -27,6 +28,7 @@ export default function Form({
   submitText = "Xác nhận",
   loading,
   errors: serverErrors,
+  defaultValues = {},
 }: Props) {
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
 
@@ -119,6 +121,7 @@ export default function Form({
                 name={control.name}
                 type={control.type}
                 placeholder={control.placeholder}
+                defaultValue={defaultValues[control.name] || ""}
                 className={errorMsg ? "border-red-500" : ""}
               />
             )}

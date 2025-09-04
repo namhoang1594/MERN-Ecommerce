@@ -6,6 +6,15 @@ export enum UserRole {
     ADMIN = "admin",
 }
 
+export interface IUserAddress {
+    _id?: Types.ObjectId;      // Mongo sẽ tự sinh khi push vào array
+    fullName: string;
+    phone: string;
+    street: string;            // số nhà, đường
+    ward: string;
+    province: string;
+    isDefault: boolean;
+}
 export interface IUser extends Document {
     _id: Types.ObjectId;
     name: string;
@@ -13,6 +22,11 @@ export interface IUser extends Document {
     password: string;
     role: UserRole;
     isActive: boolean;
+    avatar: {
+        url: string;
+        public_id: string;
+    };
+    address: IUserAddress[];
     cart: string[]; // tạm thời lưu mảng productId, sau có thể refactor thành Cart model riêng
     refreshTokens: string[];
     createdAt: Date;

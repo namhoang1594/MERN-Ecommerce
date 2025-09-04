@@ -69,6 +69,9 @@ export default function ShopHeader() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
+                <Link to="/profile">Thông tin cá nhân</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link to="/orders">Đơn mua</Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>

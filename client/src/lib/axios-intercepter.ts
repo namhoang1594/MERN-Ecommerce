@@ -73,7 +73,7 @@ export const setupAxiosInterceptors = () => {
 
                     // store.dispatch(logoutUser());
                     store.dispatch(clearAuthState());
-                    window.location.href = '/login';
+                    window.location.href = '/auth/login';
                     return Promise.reject(err);
                 }
             }

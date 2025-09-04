@@ -1,6 +1,18 @@
 import { Schema, model } from "mongoose";
 import { IUser, UserRole } from "../types/user.types";
 
+const AddressSchema = new Schema(
+  {
+    fullName: { type: String, required: true },
+    phone: { type: String, required: true },
+    street: { type: String, required: true },   // số nhà, đường
+    ward: { type: String, required: true },
+    province: { type: String, required: true },
+    isDefault: { type: Boolean, default: false },
+  },
+  { _id: true } // để mỗi address có id riêng
+);
+
 const UserSchema = new Schema<IUser>(
   {
     name: {
@@ -29,6 +41,11 @@ const UserSchema = new Schema<IUser>(
       type: Boolean,
       default: true,
     },
+    avatar: {
+      url: { type: String, default: "" },
+      public_id: { type: String, default: "" },
+    },
+    address: [AddressSchema],
     cart: [
       {
         type: Schema.Types.ObjectId,

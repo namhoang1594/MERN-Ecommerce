@@ -5,9 +5,12 @@ import adminProductsSlice from "./admin/products-slice";
 import adminOrderSlice from "./admin/order-slice";
 import adminCategorySlice from "./admin/category-slice";
 import adminBrandSlice from "./admin/brand-slice";
+import adminUsersSlice from "./admin/user-slice";
+
 import adminBannerSlice from "./admin/site-setting/banner-slice";
 import adminSettingSlice from "./admin/site-setting/setting-slice";
 
+import shopUserProfileSlice from "./shop/user-profile-slice";
 import shopBannersSlice from "./shop/home/banner-slice";
 import shopCategorySlice from "./shop/home/category-slice";
 import shopFlashSaleSlice from "./shop/home/flashSale-slice";
@@ -17,7 +20,6 @@ import shopAllProductsSlice from "./shop/products-slice/allProducts-slice";
 import shopProductDetailsSlice from "./shop/products-slice/allProducts-slice/productDetails";
 import shopBrandsSlice from "./shop/products-slice/brand-slice";
 import shopCartSlice from "./shop/cart-slice";
-import shopAddressSlice from "./shop/address-slice";
 import shopOrderSlice from "./shop/order-slice";
 import shopSearchProductSlice from "./shop/search-slice";
 import shopReviewProductSlice from "./shop/review-product-slice";
@@ -46,7 +48,9 @@ export const store = configureStore({
     adminSetting: adminSettingSlice,
     adminCategory: adminCategorySlice,
     adminBrand: adminBrandSlice,
+    adminUsers: adminUsersSlice,
 
+    shopUserProfile: shopUserProfileSlice,
     shopBanners: shopBannersSlice,
     shopCategory: shopCategorySlice,
     shopFlashSale: shopFlashSaleSlice,
@@ -56,7 +60,6 @@ export const store = configureStore({
     shopProductDetails: shopProductDetailsSlice,
     shopBrand: shopBrandsSlice,
     shopCart: shopCartSlice,
-    shopAddress: shopAddressSlice,
     shopOrder: shopOrderSlice,
     shopSearchProduct: shopSearchProductSlice,
     shopReviewProduct: shopReviewProductSlice,

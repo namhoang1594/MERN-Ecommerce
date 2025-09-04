@@ -10,6 +10,8 @@ import AdminProducts from "./pages/admin-view/product/products";
 import AdminOrders from "./pages/admin-view/order";
 import AdminCategory from "./pages/admin-view/category/category";
 import AdminBrand from "./pages/admin-view/brand/brand";
+import AdminUsers from "./pages/admin-view/user-management/userManagement";
+
 import BannerManager from "./pages/admin-view/site-setting/banner";
 import SiteSetting from "./pages/admin-view/site-setting/site-setting";
 
@@ -17,6 +19,7 @@ import ShoppingLayout from "./components/shopping-view/layout";
 import ShoppingHome from "./pages/shopping-view/home/home";
 import ShoppingProductDetails from "./pages/shopping-view/productDetails/product-Details";
 import ShoppingAllProducts from "./pages/shopping-view/all-Products";
+import ProfilePage from "./pages/shopping-view/user-profile/user-profile";
 // import SearchProducts from "./pages/shopping-view/search";
 
 import ProtectedRoute from "./components/auth/protectedGuard";
@@ -39,6 +42,15 @@ const App = () => {
           <Route path="register" element={<RegisterPage />} />
         </Route>
 
+        <Route
+          path="profile/*"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Admin routes */}
         <Route
           path="/admin"
@@ -56,6 +68,7 @@ const App = () => {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="categories" element={<AdminCategory />} />
           <Route path="brands" element={<AdminBrand />} />
+          <Route path="users" element={<AdminUsers />} />
           <Route path="banner" element={<BannerManager />} />
           <Route path="site-setting" element={<SiteSetting />} />
         </Route>
