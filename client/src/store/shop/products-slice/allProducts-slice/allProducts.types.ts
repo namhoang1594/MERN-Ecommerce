@@ -46,11 +46,12 @@ export interface ProductCardProps {
         url: string;
         public_id: string;
     }[];
-    category: string;
-    brand: string;
+    category: { _id: string; name: string } | string;
+    brand: { _id: string; name: string } | string;
     price: number;
     salePrice?: number;
-    onAddToCart: (id: string) => void;
+    totalStock?: number;
+    onAddToCart?: (id: string, quantity: number) => void;
 }
 
 export interface ProductDetail extends ShopProduct {

@@ -33,13 +33,21 @@ const persistConfig = {
   storage,
   whitelist: ['user'], // CHỈ lưu user info, KHÔNG lưu accessToken
 };
+const cartPersistConfig = {
+  key: 'cart',
+  storage,
+  whitelist: ['isLoggedIn'],
+};
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistedCartReducer = persistReducer(cartPersistConfig, shopCartSlice);
 
 
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
+    shopCart: persistedCartReducer,
+
 
     adminDashboard: adminDashboardSlice,
     adminProducts: adminProductsSlice,
@@ -59,7 +67,6 @@ export const store = configureStore({
     shopAllProducts: shopAllProductsSlice,
     shopProductDetails: shopProductDetailsSlice,
     shopBrand: shopBrandsSlice,
-    shopCart: shopCartSlice,
     shopOrder: shopOrderSlice,
     shopSearchProduct: shopSearchProductSlice,
     shopReviewProduct: shopReviewProductSlice,

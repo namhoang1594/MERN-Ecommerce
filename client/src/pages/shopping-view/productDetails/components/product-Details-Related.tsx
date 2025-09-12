@@ -29,8 +29,8 @@ export default function RelatedProducts() {
               slug={product.slug}
               title={product.title}
               image={product.image}
-              category={product.category}
-              brand={product.brand}
+              category={product.category.name}
+              brand={product.brand.name}
               price={product.price}
               salePrice={product.salePrice}
               onAddToCart={handleAddToCart}

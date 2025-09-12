@@ -1,22 +1,13 @@
 import { Document, Types } from "mongoose";
-import { IProduct } from "./products.types";
 
 export interface ICartItem {
-    productId: Types.ObjectId | IProduct;
+    productId: Types.ObjectId;
     quantity: number;
 }
 
-export interface ICart {
-    _id?: Types.ObjectId;
+export interface ICart extends Document {
     userId: Types.ObjectId;
     items: ICartItem[];
-    createdAt?: Date;
-    updatedAt?: Date;
-}
-
-export type CartDocument = ICart & Document;
-
-export interface PopulatedCartItem {
-    productId: IProduct
-    quantity: number;
+    createdAt: Date;
+    updatedAt: Date;
 }

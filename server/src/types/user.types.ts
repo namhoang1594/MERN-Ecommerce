@@ -27,7 +27,6 @@ export interface IUser extends Document {
         public_id: string;
     };
     address: IUserAddress[];
-    cart: string[]; // tạm thời lưu mảng productId, sau có thể refactor thành Cart model riêng
     refreshTokens: string[];
     createdAt: Date;
     updatedAt: Date;

@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Zap } from "lucide-react";
 
 interface ProductActionsProps {
-  onAddToCart?: () => void;
-  onBuyNow?: () => void;
-  disabled?: boolean;
+  onAddToCart: () => void;
+  onBuyNow: () => void;
+  disabled: boolean;
 }
 
 const ProductActions: React.FC<ProductActionsProps> = ({

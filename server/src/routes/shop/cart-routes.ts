@@ -1,16 +1,23 @@
-// import { Router } from "express";
-// import {
-//   addToCart,
-//   fetchCartItems,
-//   updateCartItem,
-//   deleteCartItemById,
-// } from "../../controllers/shop/cart-controller";
+import { Router } from "express";
+import {
+    getCart,
+    addToCart,
+    updateCartItem,
+    removeFromCart,
+    clearCart,
+    mergeCart,
+} from "../../controllers/shop/cart-controller";
+import { verifyToken } from "../../middlewares/auth/auth";
 
-// const router = Router();
+const router = Router();
 
-// router.post("/add", addToCart);
-// router.get("/get/:userId", fetchCartItems);
-// router.put("/update-cart", updateCartItem);
-// router.delete("/:userId/:productId", deleteCartItemById);
+router.use(verifyToken);
 
-// export default router;
+router.get("/", getCart);
+router.post("/add", addToCart);
+router.put("/update", updateCartItem);
+router.post("/merge", mergeCart);
+router.delete("/remove/:productId", removeFromCart);
+router.delete("/clear", clearCart);
+
+export default router;

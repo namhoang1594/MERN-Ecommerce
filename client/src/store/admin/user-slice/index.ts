@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { AdminUserState, Pagination } from "./user.types";
+import { AdminUserState, Pagination, UserStatus } from "./user.types";
 import axiosInstance from "@/lib/axios";
 import { UserRole } from "@/store/auth-slice/auth.types";
 
@@ -31,7 +31,7 @@ export const fetchUsers = createAsyncThunk(
             page?: number;
             limit?: number;
             search?: string;
-            filter?: { role?: UserRole; status?: "active" | "inactive" };
+            filter?: { role?: UserRole; status?: UserStatus };
         },
         { rejectWithValue }
     ) => {
@@ -100,7 +100,7 @@ const adminUsersSlice = createSlice({
         },
         setFilter: (
             state,
-            action: PayloadAction<{ role?: UserRole; status?: "active" | "inactive" }>
+            action: PayloadAction<{ role?: UserRole; status?: UserStatus }>
         ) => {
             state.filter = action.payload;
         },

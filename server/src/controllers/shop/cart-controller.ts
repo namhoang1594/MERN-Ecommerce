@@ -1,244 +1,101 @@
-// import { Request, Response } from "express";
-// import {
-//   addItemToCart,
-//   deleteCartItem,
-//   getCartWithProducts,
-//   updateCartItemQuantity,
-// } from "../../services/shop/cart.service";
-// import { PopulatedCartItem } from "../../types/cart.types";
-// import { IProductWithId } from "../../types/products.types";
+import { Request, Response } from "express";
+import { addToCartService, clearCartService, getCartService, mergeCartService, removeFromCartService, updateCartItemService } from "../../services/shop/cart.service";
 
-// export const addToCart = async (req: Request, res: Response) => {
-//   try {
-//     const { userId, productId, quantity } = req.body;
+export const getCart = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!._id;
+        const cart = await getCartService(userId);
+        res.status(200).json({ success: true, data: cart });
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
-//     console.log("REQ BODY:", req.body);
+export const addToCart = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!._id;
+        const { productId, quantity } = req.body;
+        if (!productId || !quantity || quantity < 1) {
+            return res.status(400).json({ message: "Invalid input" });
+        }
+        const cart = await addToCartService(userId, productId, quantity);
+        res.status(200).json({ success: true, data: cart });
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
-//     if (!userId || !productId || quantity <= 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Dữ liệu không hợp lệ!",
-//       });
-//     }
+export const updateCartItem = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!._id;
+        const { productId, quantity } = req.body;
+        const cart = await updateCartItemService(userId, productId, quantity);
+        res.status(200).json({ success: true, data: cart });
+    } catch (err: any) {
+        const status = err.message.includes("not found") ? 404 : 500;
+        res.status(status).json({ message: err.message });
+    }
+};
 
-//     await addItemToCart(userId, productId, quantity);
-//     const cart = await getCartWithProducts(userId);
+export const removeFromCart = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!._id;
+        const { productId } = req.params;
+        const cart = await removeFromCartService(userId, productId);
+        res.status(200).json({ success: true, data: cart });
+    } catch (err: any) {
+        const status = err.message.includes("not found") ? 404 : 500;
+        res.status(status).json({ message: err.message });
+    }
+};
 
-//     if (!cart) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Không tìm thấy giỏ hàng!",
-//       });
-//     }
+export const clearCart = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!._id;
+        const cart = await clearCartService(userId);
+        res.status(200).json({ success: true, data: cart });
+    } catch (err: any) {
+        const status = err.message.includes("not found") ? 404 : 500;
+        res.status(status).json({ message: err.message });
+    }
+};
 
-//     const validCartItems = cart.items.filter(
-//       (item): item is PopulatedCartItem =>
-//         !!item.productId &&
-//         typeof item.productId === "object" &&
-//         "title" in item.productId
-//     );
+export const mergeCart = async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!._id;
+        const { localCartItems } = req.body;
 
-//     if (validCartItems.length < cart.items.length) {
-//       cart.items = validCartItems;
-//       await cart.save();
-//     }
+        // Validate input
+        if (!Array.isArray(localCartItems)) {
+            return res.status(400).json({
+                message: "localCartItems must be an array"
+            });
+        }
 
-//     const populatedItems = validCartItems.map(({ productId, quantity }) => {
-//       const product = productId as IProductWithId;
-//       return {
-//         productId: product._id,
-//         image: product.image,
-//         title: product.title,
-//         price: product.price,
-//         salePrice: product.salePrice,
-//         quantity,
-//       };
-//     });
+        // Validate each item structure
+        for (const item of localCartItems) {
+            if (!item.productId || !item.quantity || item.quantity < 1) {
+                return res.status(400).json({
+                    message: "Invalid cart item format"
+                });
+            }
+        }
 
-//     res.status(200).json({
-//       success: true,
-//       data: {
-//         ...cart.toObject(),
-//         items: populatedItems,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("addToCart error:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Lỗi hệ thống. Vui lòng thử lại sau!",
-//       error: (error as Error).message,
-//     });
-//   }
-// };
+        const { cart, warnings } = await mergeCartService(userId, localCartItems);
 
-// export const fetchCartItems = async (req: Request, res: Response) => {
-//   try {
-//     const { userId } = req.params;
-//     const cart = await getCartWithProducts(userId);
+        res.status(200).json({
+            success: true,
+            message: "Cart merged successfully",
+            data: cart,
+            warnings
+        });
 
-//     if (!cart) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Không tìm thấy giỏ hàng!",
-//       });
-//     }
-
-//     const validCartItems = cart.items.filter(
-//       (item): item is PopulatedCartItem =>
-//         !!item.productId &&
-//         typeof item.productId === "object" &&
-//         "title" in item.productId
-//     );
-
-//     if (validCartItems.length < cart.items.length) {
-//       cart.items = validCartItems;
-//       await cart.save();
-//     }
-
-//     const populatedItems = validCartItems.map(({ productId, quantity }) => {
-//       const product = productId as IProductWithId;
-//       return {
-//         productId: product._id,
-//         image: product.image,
-//         title: product.title,
-//         price: product.price,
-//         salePrice: product.salePrice,
-//         quantity,
-//       };
-//     });
-
-//     res.status(200).json({
-//       success: true,
-//       data: {
-//         ...cart.toObject(),
-//         items: populatedItems,
-//       },
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Lỗi hệ thống. Vui lòng thử lại sau!",
-//     });
-//   }
-// };
-
-// export const updateCartItem = async (req: Request, res: Response) => {
-//   try {
-//     const { userId, productId, quantity } = req.body;
-
-//     if (!userId || !productId || quantity < 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Dữ liệu không hợp lệ!",
-//       });
-//     }
-
-//     await updateCartItemQuantity(userId, productId, quantity);
-//     const cart = await getCartWithProducts(userId);
-
-//     if (!cart) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Không tìm thấy giỏ hàng!",
-//       });
-//     }
-
-//     const validCartItems = cart.items.filter(
-//       (item): item is PopulatedCartItem =>
-//         !!item.productId &&
-//         typeof item.productId === "object" &&
-//         "title" in item.productId
-//     );
-
-//     if (validCartItems.length < cart.items.length) {
-//       cart.items = validCartItems;
-//       await cart.save();
-//     }
-
-//     const populatedItems = validCartItems.map(({ productId, quantity }) => {
-//       const product = productId as IProductWithId;
-//       return {
-//         productId: product._id,
-//         image: product.image,
-//         title: product.title,
-//         price: product.price,
-//         salePrice: product.salePrice,
-//         quantity,
-//       };
-//     });
-
-//     res.status(200).json({
-//       success: true,
-//       data: {
-//         ...cart.toObject(),
-//         items: populatedItems,
-//       },
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Lỗi hệ thống. Vui lòng thử lại sau!",
-//     });
-//   }
-// };
-
-// export const deleteCartItemById = async (req: Request, res: Response) => {
-//   try {
-//     const { userId, productId } = req.params;
-
-//     if (!userId || !productId) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Thiếu userId hoặc productId",
-//       });
-//     }
-
-//     await deleteCartItem(userId, productId);
-//     const cart = await getCartWithProducts(userId);
-
-//     if (!cart) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Không tìm thấy giỏ hàng!",
-//       });
-//     }
-
-//     const validCartItems = cart.items.filter(
-//       (item): item is PopulatedCartItem =>
-//         !!item.productId &&
-//         typeof item.productId === "object" &&
-//         "title" in item.productId
-//     );
-
-//     if (validCartItems.length < cart.items.length) {
-//       cart.items = validCartItems;
-//       await cart.save();
-//     }
-
-//     const populatedItems = validCartItems.map(({ productId, quantity }) => {
-//       const product = productId as IProductWithId;
-//       return {
-//         productId: product._id,
-//         image: product.image,
-//         title: product.title,
-//         price: product.price,
-//         salePrice: product.salePrice,
-//         quantity,
-//       };
-//     });
-
-//     res.status(200).json({
-//       success: true,
-//       data: {
-//         ...cart.toObject(),
-//         items: populatedItems,
-//       },
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Lỗi hệ thống. Vui lòng thử lại sau!",
-//     });
-//   }
-// };
+    } catch (err: any) {
+        console.error("Merge cart error:", err);
+        const status = err.message.includes("not available") ? 400 : 500;
+        res.status(status).json({
+            success: false,
+            message: err.message
+        });
+    }
+};

@@ -1,44 +1,49 @@
-
+export interface CartProduct {
+    _id: string;
+    title: string;
+    price: number;
+    salePrice?: number;
+    totalStock: number;
+    image: { url: string; public_id: string }[];
+    active: boolean;
+}
 export interface CartItem {
     _id: string;
-    userId: string;
-    productId: string;
+    productId: string | CartProduct; // Populated hoặc chỉ ID
     quantity: number;
-    title?: string;
-    image?: string;
-    price?: number;
-    salePrice?: number;
-    [key: string]: any;
 }
 
-export interface CartResponse {
+export interface Cart {
     _id: string;
     userId: string;
     items: CartItem[];
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface LocalCartItem {
+    productId: string;
+    quantity: number;
+    product: {
+        title: string;
+        image: { url: string; public_id: string }[];
+        price: number;
+        salePrice?: number;
+        totalStock: number;
+    };
+    addedAt: number;
 }
 
 export interface CartState {
-    cartItems: CartResponse | null;
-    isLoading: boolean;
-}
-
-
-
-export interface AddToCartParams {
-    userId: string;
-    productId: string;
-    quantity: number;
-}
-
-export interface UpdateCartParams {
-    userId: string;
-    productId: string;
-    quantity: number;
-}
-
-export interface DeleteCartParams {
-    userId: string;
-    productId: string;
+    serverCart: Cart | null;
+    localCart: LocalCartItem[];
+    loading: {
+        fetch: boolean,
+        update: boolean;
+        merge: boolean;
+    }
+    error: string | null;
+    isLoggedIn: boolean;
+    itemOperations: Record<string, 'adding' | 'updating' | 'removing' | null>
+    hasFetchedServerCart: boolean;
 }

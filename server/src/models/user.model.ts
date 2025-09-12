@@ -46,12 +46,6 @@ const UserSchema = new Schema<IUser>(
       public_id: { type: String, default: "" },
     },
     address: [AddressSchema],
-    cart: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Product", // ref sang Product model (tạm để vậy, sau có thể thay Cart model)
-      },
-    ],
     refreshTokens: [
       {
         type: String,

@@ -20,6 +20,7 @@ import ShoppingHome from "./pages/shopping-view/home/home";
 import ShoppingProductDetails from "./pages/shopping-view/productDetails/product-Details";
 import ShoppingAllProducts from "./pages/shopping-view/all-Products";
 import ProfilePage from "./pages/shopping-view/user-profile/user-profile";
+import CartPage from "./pages/shopping-view/cart";
 // import SearchProducts from "./pages/shopping-view/search";
 
 import ProtectedRoute from "./components/auth/protectedGuard";
@@ -43,13 +44,15 @@ const App = () => {
         </Route>
 
         <Route
-          path="profile/*"
+          path="/profile/*"
           element={
             <ProtectedRoute>
               <ProfilePage />
             </ProtectedRoute>
           }
         />
+
+        <Route path="/cart" element={<CartPage />} />
 
         {/* Admin routes */}
         <Route

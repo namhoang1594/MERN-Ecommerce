@@ -1,12 +1,13 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 import { ICart } from "../types/cart.types";
 
-const CartSchema: Schema = new Schema<ICart>(
+const CartSchema = new Schema<ICart>(
   {
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true, // mỗi user chỉ có 1 cart
     },
     items: [
       {
@@ -19,15 +20,13 @@ const CartSchema: Schema = new Schema<ICart>(
           type: Number,
           required: true,
           min: 1,
+          default: 1,
         },
       },
     ],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Cart = model<ICart & Document>("Cart", CartSchema);
-
-export default Cart;
+const CartModel = model<ICart>("Cart", CartSchema);
+export default CartModel;

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import QuantitySelector from "@/components/shopping-view/quantity-selector";
 
 interface ProductOptionsProps {
   sizes?: string[];
@@ -74,26 +75,12 @@ const ProductOptions: React.FC<ProductOptionsProps> = ({
       <div>
         <h3 className="font-medium mb-2">Số lượng</h3>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleQuantityChange(quantity - 1)}
-          >
-            -
-          </Button>
-          <Input
-            type="number"
+          <QuantitySelector
             value={quantity}
-            onChange={(e) => handleQuantityChange(Number(e.target.value))}
-            className="w-16 text-center"
+            onChange={setQuantity}
+            min={1}
+            max={totalStock}
           />
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleQuantityChange(quantity + 1)}
-          >
-            +
-          </Button>
           <span className="text-sm text-gray-500 ml-2">
             {totalStock} sản phẩm có sẵn
           </span>
