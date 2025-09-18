@@ -7,7 +7,6 @@ import RegisterPage from "./pages/auth/register";
 import AdminLayout from "./components/admin-view/layout";
 import AdminDashboard from "./pages/admin-view/dashboard";
 import AdminProducts from "./pages/admin-view/product/products";
-import AdminOrders from "./pages/admin-view/order";
 import AdminCategory from "./pages/admin-view/category/category";
 import AdminBrand from "./pages/admin-view/brand/brand";
 import AdminUsers from "./pages/admin-view/user-management/userManagement";
@@ -21,10 +20,15 @@ import ShoppingProductDetails from "./pages/shopping-view/productDetails/product
 import ShoppingAllProducts from "./pages/shopping-view/all-Products";
 import ProfilePage from "./pages/shopping-view/user-profile/user-profile";
 import CartPage from "./pages/shopping-view/cart";
+import PaypalSuccessPage from "./pages/shopping-view/orders/checkout/paypal-success";
+import PaypalCancelPage from "./pages/shopping-view/orders/checkout/paypal-cancel";
 // import SearchProducts from "./pages/shopping-view/search";
 
 import ProtectedRoute from "./components/auth/protectedGuard";
 import RoleGuard from "./components/auth/roleGuard";
+import AdminOrdersPage from "./pages/admin-view/orders/order";
+import OrdersPage from "./pages/shopping-view/orders/orders";
+import CheckoutPage from "./pages/shopping-view/orders/checkout/checkout";
 
 const App = () => {
   return (
@@ -53,6 +57,13 @@ const App = () => {
         />
 
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/orders" element={<OrdersPage />} />
+        <Route
+          path="/checkout/paypal/success"
+          element={<PaypalSuccessPage />}
+        />
+        <Route path="/checkout/paypal/cancel" element={<PaypalCancelPage />} />
 
         {/* Admin routes */}
         <Route
@@ -68,7 +79,7 @@ const App = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="categories" element={<AdminCategory />} />
           <Route path="brands" element={<AdminBrand />} />
           <Route path="users" element={<AdminUsers />} />

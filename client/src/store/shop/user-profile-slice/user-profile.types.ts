@@ -25,6 +25,7 @@ export interface UserProfile extends User {
 export interface ProfileState {
     info: UserProfile | null;
     addresses: Address[];
+    defaultAddress: Address | null;
     loading: boolean;
     error: string | null;
 }

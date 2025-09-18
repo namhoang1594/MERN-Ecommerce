@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
-import ConfirmModal from "@/components/common/confirm-modal";
+import DeleteModal from "@/components/common/delete-modal";
 import { Category } from "@/store/admin/category-slice/category.types";
 import {
   deleteCategory,
@@ -150,7 +150,7 @@ const CategoryPage = () => {
         onSuccess={() => dispatch(fetchAllCategory())}
       />
 
-      <ConfirmModal
+      <DeleteModal
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}

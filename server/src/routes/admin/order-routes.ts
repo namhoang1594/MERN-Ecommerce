@@ -1,14 +1,13 @@
-import { Router } from "express";
-import {
-  getAllOrdersOfAllUser,
-  getOrderDetailsAdmin,
-  updateOrderStatus,
-} from "../../controllers/admin/order-controller";
+import express from "express";
+import { requireAdmin, verifyToken } from "../../middlewares/auth/auth";
+import { getAllOrders, getOrderById, updateOrderStatus } from "../../controllers/admin/order-controller";
 
-const router = Router();
+const router = express.Router();
 
-router.get("/get", getAllOrdersOfAllUser);
-router.get("/details/:id", getOrderDetailsAdmin);
-router.put("/update-status/:id", updateOrderStatus);
+router.use(verifyToken, requireAdmin);
+
+router.get("/", getAllOrders);
+router.get('/:id', getOrderById);
+router.put("/:id/status", updateOrderStatus);
 
 export default router;

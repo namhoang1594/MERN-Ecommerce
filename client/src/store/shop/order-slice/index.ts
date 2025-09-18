@@ -1,104 +1,82 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import {
-  OrderDetails,
-  OrderState,
-  CreateOrderResponse,
-  CapturePaymentParams,
-} from "./order.types";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { ShopOrder, ShopOrdersState } from "./order.types";
+import axiosInstance from "@/lib/axios";
 
-const initialState: OrderState = {
-  approvalURL: null,
-  isLoading: false,
-  orderId: null,
-  orderList: [],
-  orderDetails: null,
+const initialState: ShopOrdersState = {
+  list: [],
+  detail: null,
+  loading: false,
+  error: null,
 };
 
-export const createNewOrder = createAsyncThunk<CreateOrderResponse, any>(
-  "/order/createNewOrder",
-  async (orderData) => {
-    const response = await axios.post("http://localhost:5000/api/shop/order/create", orderData);
-    return response.data;
-  }
-);
-
-export const capturePayment = createAsyncThunk<any, CapturePaymentParams>(
-  "/order/capturePayment",
-  async ({ paypalOrderId, mongoOrderId }) => {
-    const response = await axios.post("http://localhost:5000/api/shop/order/capture", {
-      paypalOrderId,
-      mongoOrderId,
+// Lấy danh sách orders của user
+export const fetchOrders = createAsyncThunk<ShopOrder[]>
+  ("orders/fetchOrders",
+    async (_, { rejectWithValue }) => {
+      try {
+        const { data } = await axiosInstance.get("/shop/orders");
+        return data;
+      } catch (err: any) {
+        return rejectWithValue(err.response?.data?.message || "Lỗi tải orders");
+      }
     });
-    return response.data;
-  }
-);
 
-export const getAllOrdersByUserId = createAsyncThunk<{ data: OrderDetails[] }, string>(
-  "/order/getAllOrdersByUserId",
-  async (userId) => {
-    const response = await axios.get(`http://localhost:5000/api/shop/order/list/${userId}`);
-    return response.data;
+// Lấy chi tiết 1 order
+export const fetchOrderDetail = createAsyncThunk<
+  ShopOrder,
+  string
+>("orders/fetchOrderDetail", async (orderId, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosInstance.get(`/shop/orders/${orderId}`);
+    return data;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data?.message || "Lỗi tải chi tiết order");
   }
-);
+});
 
-export const getOrderDetailsId = createAsyncThunk<{ data: OrderDetails }, string>(
-  "/order/getOrderDetailsId",
-  async (id) => {
-    const response = await axios.get(`http://localhost:5000/api/shop/order/details/${id}`);
-    return response.data;
-  }
-);
-
-const shoppingOrderSlice = createSlice({
-  name: "shoppingOrderSlice",
+const ordersSlice = createSlice({
+  name: "orders",
   initialState,
   reducers: {
-    resetOrderDetails: (state) => {
-      state.orderDetails = null;
+    resetOrderDetail(state) {
+      state.detail = null;
+      state.error = null;
+    },
+    clearError(state) {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createNewOrder.pending, (state) => {
-        state.isLoading = true;
+      // fetchOrders
+      .addCase(fetchOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(createNewOrder.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.approvalURL = action.payload.approvalURL;
-        state.orderId = action.payload.orderId;
-        sessionStorage.setItem("currentOrderId", JSON.stringify(action.payload.orderId));
+      .addCase(fetchOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.list = action.payload;
       })
-      .addCase(createNewOrder.rejected, (state) => {
-        state.isLoading = false;
-        state.approvalURL = null;
-        state.orderId = null;
+      .addCase(fetchOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
-      .addCase(getAllOrdersByUserId.pending, (state) => {
-        state.isLoading = true;
+      // fetchOrderDetail
+      .addCase(fetchOrderDetail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(getAllOrdersByUserId.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.orderList = action.payload.data;
+      .addCase(fetchOrderDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.detail = action.payload;
       })
-      .addCase(getAllOrdersByUserId.rejected, (state) => {
-        state.isLoading = false;
-        state.orderList = [];
-      })
-      .addCase(getOrderDetailsId.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getOrderDetailsId.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.orderDetails = action.payload.data;
-      })
-      .addCase(getOrderDetailsId.rejected, (state) => {
-        state.isLoading = false;
-        state.orderDetails = null;
+      .addCase(fetchOrderDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { resetOrderDetails } = shoppingOrderSlice.actions;
+export const { resetOrderDetail, clearError } = ordersSlice.actions;
 
-export default shoppingOrderSlice.reducer;
+export default ordersSlice.reducer;

@@ -1,102 +1,79 @@
-import { model, Schema, Document } from "mongoose";
-import { IOrder, OrderStatus, PaymentMethod, PaymentStatus } from "../types/orders.types";
+import { Schema, model, Document, Types } from "mongoose";
+import { IOrder, IOrderItem, IPaymentResult, IShippingInfo, OrderStatus, PaymentMethod } from "../types/orders.types";
 
-const OrderItemSchema = new Schema({
-  productId: {
-    type: String,
-    required: true
+const OrderItemSchema = new Schema<IOrderItem>(
+  {
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    name: { type: String, required: true },
+    thumbnail: { type: String, default: "" },
+    variant: { type: String, default: null },
+    quantity: { type: Number, required: true, min: 1 },
+    priceAtPurchase: { type: Number, required: true, min: 0 },
+    subtotal: { type: Number, required: true, min: 0 },
   },
-  title: {
-    type: String,
-    required: true
-  },
-  image: {
-    type: String,
-    required: true
-  },
-  price: {
-    type: String,
-    required: true
-  },
-  quantity: {
-    type: Number,
-    required: true
-  },
-});
+  { _id: false }
+);
 
-const AddressInfoSchema = new Schema({
-  addressId: {
-    type: String,
-    required: true
+const ShippingInfoSchema = new Schema<IShippingInfo>(
+  {
+    fullName: { type: String, required: true },
+    phone: { type: String, required: true },
+    street: { type: String, required: true },
+    ward: { type: String, required: true },
+    province: { type: String, required: true },
   },
-  address: {
-    type: String,
-    required: true
-  },
-  city: {
-    type: String,
-    required: true
-  },
-  pincode: {
-    type: String,
-    required: true
-  },
-  phone: {
-    type: String,
-    required: true
-  },
-  notes: {
-    type: String
-  },
-});
+  { _id: false }
+);
 
-const OrderSchema = new Schema<IOrder & Document>({
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+const PaymentResultSchema = new Schema<IPaymentResult>(
+  {
+    provider: { type: String },
+    transactionId: { type: String },
+    orderId: { type: String },
+    payerId: { type: String },
+    status: { type: String },
+    raw: { type: Schema.Types.Mixed },
+    paidAt: { type: Date },
   },
-  cartId: {
-    type: Schema.Types.ObjectId,
-    ref: "Cart",
-    required: true
-  },
-  cartItems: [OrderItemSchema],
-  addressInfo: AddressInfoSchema,
-  orderStatus: {
-    type: String,
-    enum: Object.values(OrderStatus),
-    default: OrderStatus.PROCESSING,
-  },
-  paymentMethods: {
-    type: String,
-    enum: Object.values(PaymentMethod),
-    required: true,
-  },
-  paymentStatus: {
-    type: String,
-    enum: Object.values(PaymentStatus),
-    default: PaymentStatus.PENDING,
-  },
-  totalAmount: {
-    type: Number,
-    required: true
-  },
-  orderDate: {
-    type: Date,
-    default: Date.now
-  },
-  orderUpdateDate: {
-    type: Date
-  },
-  paymentId: {
-    type: String
-  },
-  payerId: {
-    type: String
-  },
-});
+  { _id: false }
+);
 
-const Order = model<IOrder & Document>("Order", OrderSchema);
+const OrderSchema = new Schema<IOrder>(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    shippingInfo: { type: ShippingInfoSchema, required: true },
+    items: { type: [OrderItemSchema], required: true, default: [] },
+    paymentMethod: {
+      type: String,
+      enum: Object.values(PaymentMethod),
+      required: true,
+    },
+    paymentResult: { type: PaymentResultSchema, default: null },
+    status: {
+      type: String,
+      enum: Object.values(OrderStatus),
+      default: OrderStatus.PENDING,
+    },
+    totalAmount: { type: Number, required: true, min: 0 },
+    shippingFee: { type: Number, required: true, default: 0 },
+    finalAmount: { type: Number, required: true, min: 0 },
+    note: { type: String, default: "" },
+  },
+  {
+    timestamps: true,
+  }
+);
+OrderSchema.index({ userId: 1, status: 1, createdAt: -1 });
 
-export default Order;
+const OrderModel = model<IOrder>("Order", OrderSchema);
+
+export default OrderModel;

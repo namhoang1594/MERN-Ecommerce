@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Loader2, Trash2 } from "lucide-react";
-import ConfirmModal from "@/components/common/confirm-modal";
+import DeleteModal from "@/components/common/delete-modal";
 import { Pagination } from "@/components/common/pagination";
 import { UserRole } from "@/store/auth-slice/auth.types";
 import { UserStatus } from "@/store/admin/user-slice/user.types";
@@ -239,7 +239,7 @@ const UserManagementPage = () => {
       />
 
       {/* Confirm delete */}
-      <ConfirmModal
+      <DeleteModal
         open={confirmDelete.open}
         onClose={() => setConfirmDelete({ open: false, userId: null })}
         onConfirm={confirmDeleteUser}

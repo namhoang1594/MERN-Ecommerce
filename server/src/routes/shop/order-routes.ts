@@ -1,16 +1,13 @@
-import { Router } from "express";
-import {
-  createOrder,
-  capturePayment,
-  getAllOrdersByUser,
-  getOrderDetails,
-} from "../../controllers/shop/order-controller";
+import express from "express";
+import { verifyToken } from "../../middlewares/auth/auth";
+import { getMyOrderById, getMyOrders } from "../../controllers/shop/order-controller";
 
-const router = Router();
+const router = express.Router();
 
-router.post("/create", createOrder);
-router.post("/capture", capturePayment);
-router.get("/list/:userId", getAllOrdersByUser);
-router.get("/details/:id", getOrderDetails);
+router.use(verifyToken);
+
+// User
+router.get("/", getMyOrders);
+router.get("/:id", getMyOrderById);
 
 export default router;

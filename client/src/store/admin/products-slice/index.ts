@@ -1,15 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { Product, ProductFormState } from "./product.types";
+import { Product, ProductFormState, ProductState } from "./product.types";
 
-export interface ProductState {
-  products: Product[];
-  totalPages: number;
-  totalItems: number;
-  selectedProduct: Product | null;
-  loading: boolean;
-  error: string | null;
-}
 
 const initialState: ProductState = {
   products: [],

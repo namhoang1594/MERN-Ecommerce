@@ -15,7 +15,7 @@ import { Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Brand } from "@/store/admin/brand-slice/brand.types";
 import BrandFormModal from "./brandFormModal";
-import ConfirmModal from "@/components/common/confirm-modal";
+import DeleteModal from "@/components/common/delete-modal";
 import {
   deleteBrand,
   fetchAllBrands,
@@ -150,7 +150,7 @@ const BrandPage = () => {
         onSuccess={() => dispatch(fetchAllBrands())}
       />
 
-      <ConfirmModal
+      <DeleteModal
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}

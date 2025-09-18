@@ -31,7 +31,7 @@ const initialState: ProductFormState = {
   title: "",
   description: "",
   price: 0,
-  salePrice: 0,
+  salePrice: null,
   totalStock: 0,
   image: [],
   brand: "",
@@ -144,7 +144,7 @@ export const ProductFormModal = ({
               id="salePrice"
               name="salePrice"
               type="number"
-              value={formData.salePrice}
+              value={formData.salePrice ?? ""}
               onChange={handleChange}
               placeholder="0"
             />

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-interface ConfirmModalProps {
+interface DeleteModalProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -17,7 +17,7 @@ interface ConfirmModalProps {
   confirmText?: string;
 }
 
-const ConfirmModal: React.FC<ConfirmModalProps> = ({
+const DeleteModal: React.FC<DeleteModalProps> = ({
   open,
   onClose,
   onConfirm,
@@ -45,4 +45,4 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   );
 };
 
-export default ConfirmModal;
+export default DeleteModal;

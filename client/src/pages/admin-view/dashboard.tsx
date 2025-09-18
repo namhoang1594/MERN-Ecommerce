@@ -18,7 +18,7 @@ import { TrendingUp, ShoppingCart, Users, DollarSign } from "lucide-react";
 
 import { formatCurrency } from "@/lib/utils";
 import { getDashboardStats } from "@/services/admin/dashboard";
-import { DashboardStatsResponse } from "@/types/admin/dashboard/dashboard.types";
+import { DashboardStatsResponse } from "@/store/admin/dashboard-slice/dashboard.types";
 
 const pieColors = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444"];
 
@@ -29,7 +29,6 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getDashboardStats();
-      console.log("Dashboard data:", data);
       setDashboardData(data);
     };
     fetchData();
@@ -70,9 +69,6 @@ const DashboardPage = () => {
       icon: <Users className="w-6 h-6 text-orange-500" />,
     },
   ];
-
-  console.log(topProducts, "topProducts");
-  console.log(orderStatusStats, "order status stats");
 
   return (
     <div className="p-6 space-y-6">
@@ -193,7 +189,9 @@ const DashboardPage = () => {
                   <tr key={order._id}>
                     <td className="px-4 py-2 border">{order.user.name}</td>
                     <td className="px-4 py-2 border">
-                      {formatCurrency(order.totalAmount)}
+                      {formatCurrency(
+                        order.finalAmount ?? order.totalAmount ?? 0
+                      )}
                     </td>
                     <td className="px-4 py-2 border">
                       <Badge
@@ -209,7 +207,7 @@ const DashboardPage = () => {
                       </Badge>
                     </td>
                     <td className="px-4 py-2 border">
-                      {new Date(order.orderDate).toLocaleDateString("vi-VN")}
+                      {new Date(order.createdAt).toLocaleDateString("vi-VN")}
                     </td>
                   </tr>
                 ))}

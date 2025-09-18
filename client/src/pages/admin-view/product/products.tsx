@@ -18,7 +18,7 @@ import {
   ProductFormState,
 } from "@/store/admin/products-slice/product.types";
 import { toast } from "sonner";
-import ConfirmModal from "@/components/common/confirm-modal";
+import DeleteModal from "@/components/common/delete-modal";
 import {
   convertProductToFormState,
   convertToPlainProduct,
@@ -37,7 +37,7 @@ export default function ProductPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedProductToDelete, setSelectedProductToDelete] =
     useState<Product | null>(null);
   const brands = useSelector((state: RootState) => state.adminBrand.brandList);
@@ -102,7 +102,7 @@ export default function ProductPage() {
 
   const handleDeleteProduct = (product: Product) => {
     setSelectedProductToDelete(product);
-    setOpenConfirmModal(true);
+    setOpenDeleteModal(true);
   };
 
   const confirmDeleteProduct = async () => {
@@ -125,7 +125,7 @@ export default function ProductPage() {
     } catch (error) {
       toast.error("Lỗi khi xoá sản phẩm");
     } finally {
-      setOpenConfirmModal(false);
+      setOpenDeleteModal(false);
       setSelectedProductToDelete(null);
     }
   };
@@ -183,10 +183,10 @@ export default function ProductPage() {
         categories={categories}
       />
 
-      <ConfirmModal
-        open={openConfirmModal}
+      <DeleteModal
+        open={openDeleteModal}
         onClose={() => {
-          setOpenConfirmModal(false);
+          setOpenDeleteModal(false);
           setSelectedProductToDelete(null);
         }}
         onConfirm={confirmDeleteProduct}

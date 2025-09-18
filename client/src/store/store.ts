@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./auth-slice";
 import adminDashboardSlice from "./admin/dashboard-slice";
 import adminProductsSlice from "./admin/products-slice";
-import adminOrderSlice from "./admin/order-slice";
+import adminOrderSlice from "./admin/order-slice/index";
 import adminCategorySlice from "./admin/category-slice";
 import adminBrandSlice from "./admin/brand-slice";
 import adminUsersSlice from "./admin/user-slice";
@@ -20,7 +20,8 @@ import shopAllProductsSlice from "./shop/products-slice/allProducts-slice";
 import shopProductDetailsSlice from "./shop/products-slice/allProducts-slice/productDetails";
 import shopBrandsSlice from "./shop/products-slice/brand-slice";
 import shopCartSlice from "./shop/cart-slice";
-import shopOrderSlice from "./shop/order-slice";
+import shopOrderSlice from "./shop/order-slice/index";
+import shopCheckoutSlice from "./shop/order-slice/checkout-slice/index";
 import shopSearchProductSlice from "./shop/search-slice";
 import shopReviewProductSlice from "./shop/review-product-slice";
 import storage from "redux-persist/lib/storage";
@@ -68,6 +69,7 @@ export const store = configureStore({
     shopProductDetails: shopProductDetailsSlice,
     shopBrand: shopBrandsSlice,
     shopOrder: shopOrderSlice,
+    shopCheckout: shopCheckoutSlice,
     shopSearchProduct: shopSearchProductSlice,
     shopReviewProduct: shopReviewProductSlice,
   },

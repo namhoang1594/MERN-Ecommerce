@@ -1,31 +1,30 @@
-export interface AddressInfo {
-    street: string;
-    city: string;
-    country: string;
-    postalCode: string;
-}
-
-export interface CartItem {
-    productId: string;
-    title: string;
-    quantity: number;
-    price: number;
-}
-
-export interface OrderDetails {
+export interface AdminOrder {
     _id: string;
-    userId: string;
-    orderDate: string;
-    orderStatus: string;
-    paymentMethod?: string;
-    paymentStatus?: string;
-    totalAmount: number;
-    addressInfo: AddressInfo;
-    cartItems: CartItem[];
+    userId: { name: string; email: string };
+    status: string;
+    finalAmount: number;
+    createdAt: string;
 }
 
-export interface AdminOrderState {
-    orderList: OrderDetails[];
-    orderDetails: OrderDetails | null;
-    isLoading: boolean;
+export interface AdminOrderDetail extends AdminOrder {
+    items: {
+        name: string;
+        quantity: number;
+        priceAtPurchase: number;
+    }[];
+    shippingInfo: {
+        fullName: string;
+        phone: string;
+        street: string;
+        ward: string;
+        province: string;
+    };
+    paymentMethod: string;
+}
+
+export interface AdminOrdersState {
+    list: AdminOrder[];
+    detail: AdminOrderDetail | null;
+    loading: boolean;
+    error: string | null;
 }

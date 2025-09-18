@@ -1,84 +1,57 @@
 import { Request, Response } from "express";
-import {
-  findAllOrders,
-  findOrderById,
-  updateOrderStatusById
-} from "../../services/admin/orders.service";
+import { getAllOrdersAdmin, getOrderByIdAdmin, updateOrderStatusAdmin } from "../../services/admin/orders.service";
+import { OrderStatus } from "../../types/orders.types";
 
-
-export const getAllOrdersOfAllUser = async (_req: Request, res: Response) => {
+export const getAllOrders = async (_req: Request, res: Response) => {
   try {
-    const orders = await findAllOrders();
-
-    if (!orders.length) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy đơn hàng!",
-      });
-    }
-
-    res.status(200).json({
+    const orders = await getAllOrdersAdmin();
+    return res.json({
       success: true,
-      data: orders,
+      orders
     });
-  } catch (e) {
-    console.error("[getAllOrdersOfAllUser]", e);
-    res.status(500).json({
-      success: false,
-      message: "Lỗi hệ thống, vui lòng thử lại sau!",
-    });
+  } catch (error) {
+    console.error("Get all orders error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export const getOrderDetailsAdmin = async (req: Request, res: Response) => {
+export const getOrderById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-
-    const order = await findOrderById(id);
+    const order = await getOrderByIdAdmin(id);
 
     if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy đơn hàng!",
-      });
+      return res.status(404).json({ message: "Order not found" });
     }
 
-    res.status(200).json({
+    return res.json({
       success: true,
-      data: order,
+      order
     });
-  } catch (e) {
-    console.error("[getOrderDetailsAdmin]", e);
-    res.status(500).json({
-      success: false,
-      message: "Lỗi hệ thống, vui lòng thử lại sau!",
-    });
+  } catch (error) {
+    console.error("Get order detail error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { orderStatus } = req.body;
+    const { status } = req.body;
 
-    const order = await updateOrderStatusById(id, orderStatus);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy đơn hàng!",
-      });
+    if (!Object.values(OrderStatus).includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
     }
 
-    res.status(200).json({
+    const updatedOrder = await updateOrderStatusAdmin(id, status);
+    if (!updatedOrder) return res.status(404).json({ message: "Order not found" });
+
+    return res.json({
       success: true,
-      message: "Cập nhật trạng thái đơn hàng thành công!",
+      order: updatedOrder
     });
-  } catch (e) {
-    console.error("[updateOrderStatus]", e);
-    res.status(500).json({
-      success: false,
-      message: "Lỗi hệ thống, vui lòng thử lại sau!",
-    });
+  } catch (error) {
+    console.error("Update order status error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

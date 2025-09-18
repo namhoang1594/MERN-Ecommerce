@@ -41,6 +41,9 @@ export default function ProfileInfo({
   const { info, addresses, loading } = useSelector(
     (state: RootState) => state.shopUserProfile
   );
+  const { defaultAddress } = useSelector(
+    (state: RootState) => state.shopUserProfile
+  );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadedResult, setUploadedResult] = useState<UploadedResult | null>(
     null
@@ -106,54 +109,39 @@ export default function ProfileInfo({
       {/* Địa chỉ mặc định */}
       <div className="border rounded-xl p-4 bg-gray-50">
         <h3 className="font-medium mb-3">Địa chỉ mặc định</h3>
-        {addresses?.length > 0 ? (
+        {defaultAddress ? (
           <>
-            {(() => {
-              const defaultAddr = addresses.find((addr) => addr.isDefault);
-              if (!defaultAddr)
-                return (
-                  <p className="text-gray-500 text-sm">
-                    Chưa có địa chỉ mặc định
-                  </p>
-                );
-              return (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-gray-600">
-                      Họ và tên
-                    </label>
-                    <input
-                      type="text"
-                      value={defaultAddr.fullName}
-                      readOnly
-                      className="w-full border rounded-lg px-3 py-2 bg-gray-100 text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-gray-600">
-                      Số điện thoại
-                    </label>
-                    <input
-                      type="text"
-                      value={defaultAddr.phone}
-                      readOnly
-                      className="w-full border rounded-lg px-3 py-2 bg-gray-100 text-sm"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm text-gray-600">
-                      Địa chỉ
-                    </label>
-                    <input
-                      type="text"
-                      value={`${defaultAddr.street}, ${defaultAddr.ward}, ${defaultAddr.province}`}
-                      readOnly
-                      className="w-full border rounded-lg px-3 py-2 bg-gray-100 text-sm"
-                    />
-                  </div>
-                </div>
-              );
-            })()}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-gray-600">Họ và tên</label>
+                <input
+                  type="text"
+                  value={defaultAddress.fullName}
+                  readOnly
+                  className="w-full border rounded-lg px-3 py-2 bg-gray-100 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-600">
+                  Số điện thoại
+                </label>
+                <input
+                  type="text"
+                  value={defaultAddress.phone}
+                  readOnly
+                  className="w-full border rounded-lg px-3 py-2 bg-gray-100 text-sm"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm text-gray-600">Địa chỉ</label>
+                <input
+                  type="text"
+                  value={`${defaultAddress.street}, ${defaultAddress.ward}, ${defaultAddress.province}`}
+                  readOnly
+                  className="w-full border rounded-lg px-3 py-2 bg-gray-100 text-sm"
+                />
+              </div>
+            </div>
             <Button
               type="button"
               variant="link"

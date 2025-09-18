@@ -12,13 +12,13 @@ import {
 
 import Form from "@/components/common/form";
 import { Button } from "@/components/ui/button";
-import ConfirmModal from "@/components/common/confirm-modal";
+import DeleteModal from "@/components/common/delete-modal";
 import { addressFormControls } from "@/config";
 
 const AddressList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { addresses, loading, error } = useSelector(
-    (state: RootState) => state.shopUserProfile // Sửa selector name
+    (state: RootState) => state.shopUserProfile
   );
 
   const [showForm, setShowForm] = useState(false);
@@ -184,7 +184,7 @@ const AddressList = () => {
       </div>
 
       {/* Confirm delete modal */}
-      <ConfirmModal
+      <DeleteModal
         open={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}

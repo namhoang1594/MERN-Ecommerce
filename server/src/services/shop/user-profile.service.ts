@@ -3,7 +3,21 @@ import UserModel from "../../models/user.model";
 import { imageDeleteUtil } from "../../helpers/cloudinary";
 
 export const getProfileService = async (userId: string) => {
-    return await UserModel.findById(userId).select("-password -refreshTokens");
+    const user = await UserModel.findById(userId).select("-password -refreshTokens")
+        .lean();
+
+    if (!user) return null;
+
+    // Mongo query để lấy thẳng địa chỉ mặc định
+    const defaultAddress = await UserModel.findOne(
+        { _id: userId, "address.isDefault": true },
+        { "address.$": 1 } // chỉ lấy phần tử match
+    ).lean();
+
+    return {
+        ...user,
+        defaultAddress: defaultAddress?.address?.[0] || null,
+    };
 };
 
 export const updateProfileService = async (

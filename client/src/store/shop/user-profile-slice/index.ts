@@ -5,6 +5,7 @@ import axiosInstance from "@/lib/axios";
 const initialState: ProfileState = {
     info: null,
     addresses: [],
+    defaultAddress: null,
     loading: false,
     error: null,
 };
@@ -132,9 +133,11 @@ const userProfileSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchProfile.fulfilled, (state, action: PayloadAction<UserProfile>) => {
+            .addCase(fetchProfile.fulfilled, (state, action: PayloadAction<any>) => {
                 state.loading = false;
                 state.info = action.payload;
+                state.addresses = action.payload.address || [];
+                state.defaultAddress = action.payload.defaultAddress || null;
             })
             .addCase(fetchProfile.rejected, (state, action) => {
                 state.loading = false;

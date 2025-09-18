@@ -1,4 +1,6 @@
-import { CartItem, CartState, LocalCartItem } from "@/store/shop/cart-slice/cart.types";
+import { clearCart, clearLocalCart } from "@/store/shop/cart-slice";
+import { CartItem, LocalCartItem } from "@/store/shop/cart-slice/cart.types";
+import { AppDispatch } from "@/store/store";
 
 export const getProductInfo = (item: CartItem | LocalCartItem, isLoggedIn: boolean) => {
     if (!isLoggedIn) {
@@ -47,4 +49,10 @@ export const calculateTotals = (items: any[], isLoggedIn: boolean) => {
         }
         return acc;
     }, { totalPrice: 0, totalItems: 0 });
+};
+
+// Hàm reset cart sau khi checkout thành công
+export const resetCartAfterCheckout = (dispatch: AppDispatch) => {
+    dispatch(clearCart());       // clear Redux store
+    clearLocalCart();            // clear LocalStorage
 };

@@ -157,3 +157,18 @@ export const addressFormControls: FormControl[] = [
     rules: [{ type: "required", message: "Vui lòng nhập tỉnh/thành phố" }],
   },
 ];
+
+export const checkoutFormControls: FormControl[] = [
+  {
+    name: "paymentMethod",
+    label: "Phương thức thanh toán",
+    type: "select",
+    placeholder: "Chọn phương thức",
+    options: [
+      { value: "COD", label: "Thanh toán khi nhận hàng (COD)" },
+      { value: "PayPal", label: "Thanh toán qua PayPal" },
+    ],
+    rules: [{ type: "required" }]
+  },
+  { name: "note", label: "Ghi chú", type: "textarea", placeholder: "Ghi chú thêm (nếu có)" },
+]

@@ -31,7 +31,7 @@ export interface ProductFormState {
     title: string;
     description: string;
     price: number;
-    salePrice?: number;
+    salePrice?: number | null;
     totalStock: number;
     image: UploadedResult[];
     category: string;
@@ -60,4 +60,13 @@ export interface ProductTableProps {
 export interface ProductImage {
     url: string;
     public_id: string;
+}
+
+export interface ProductState {
+    products: Product[];
+    totalPages: number;
+    totalItems: number;
+    selectedProduct: Product | null;
+    loading: boolean;
+    error: string | null;
 }

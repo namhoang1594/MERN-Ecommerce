@@ -1,62 +1,62 @@
-import { Types } from "mongoose";
-
-export enum PaymentMethod {
-    PAYPAL = "paypal",
-    COD = "cod",
-}
-
-export enum PaymentStatus {
-    PENDING = "pending",
-    PAID = "paid",
-    FAILED = "failed",
-    COMPLETED = "completed",
-    CANCELLED = "cancelled",
-}
+import { Document, Types } from "mongoose";
 
 export enum OrderStatus {
-    PROCESSING = "processing",
-    SHIPPED = "shipped",
+    PENDING = "pending",        // vừa tạo
+    PROCESSING = "processing",  // đang xử lý (vd: kiểm tra, chuẩn bị)
+    AWAITING_PAYMENT = "awaiting_payment", // nếu cần
+    PAID = "paid",
+    SHIPPING = "shipping",
     DELIVERED = "delivered",
+    // COMPLETED = "completed",
     CANCELLED = "cancelled",
-    CONFIRMED = "confirmed",
+    REFUNDED = "refunded",
+}
+
+export enum PaymentMethod {
+    COD = "COD",
+    PAYPAL = "PayPal"
+    // VNPAY = "VNPAY", //VN k hỗ trợ localhost nên sẽ bổ sung sau
 }
 
 export interface IOrderItem {
-    productId: string;
-    title: string;
-    image: string;
-    price: string;
+    productId: Types.ObjectId;
+    name: string;
+    thumbnail?: string;
+    variant?: string | null; // nếu có variant/option
     quantity: number;
+    priceAtPurchase: number;
+    subtotal: number; // quantity * priceAtPurchase
 }
 
-export interface IAddressInfo {
-    addressId: string;
-    address: string;
-    city: string;
-    pincode: string;
+export interface IShippingInfo {
+    fullName: string;
     phone: string;
-    notes?: string;
+    street: string;
+    ward: string;
+    province: string;
 }
 
-export interface IOrder {
+export interface IPaymentResult {
+    provider?: string; // ex: 'vnpay', 'momo'
+    transactionId?: string;
+    orderId?: string; // PayPal order ID
+    payerId?: string; // PayPal payer ID
+    status?: string; // ex: 'success' | 'failed'
+    raw?: any; // lưu raw response nếu cần (optional)
+    paidAt?: Date | null;
+}
+
+export interface IOrder extends Document {
     userId: Types.ObjectId;
-    cartId: Types.ObjectId;
-    cartItems: IOrderItem[];
-    addressInfo: IAddressInfo;
-    orderStatus: OrderStatus;
-    paymentMethods: PaymentMethod;
-    paymentStatus: PaymentStatus;
-    totalAmount: number;
-    orderDate: Date;
-    orderUpdateDate?: Date;
-    paymentId?: string;
-    payerId?: string;
-}
-
-export interface IOrderWithUserName extends Omit<IOrder, "userId"> {
-    _id: Types.ObjectId;
-    userId: {
-        _id: Types.ObjectId;
-        userName: string;
-    };
+    shippingInfo: IShippingInfo;
+    items: IOrderItem[];
+    paymentMethod: PaymentMethod;
+    paymentResult?: IPaymentResult | null;
+    status: OrderStatus;
+    totalAmount: number;    // tổng trước phí, trước giảm
+    shippingFee: number;
+    finalAmount: number;    // tổng tiền cuối cùng (sau phí, giảm)
+    note?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }

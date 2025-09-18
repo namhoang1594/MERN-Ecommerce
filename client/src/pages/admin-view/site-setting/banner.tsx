@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Trash } from "lucide-react";
 import { toast } from "sonner";
-import ConfirmModal from "@/components/common/confirm-modal";
+import DeleteModal from "@/components/common/delete-modal";
 import {
   Select,
   SelectContent,
@@ -204,7 +204,7 @@ const BannerManager = () => {
         )}
       </div>
 
-      <ConfirmModal
+      <DeleteModal
         open={isDialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={confirmDelete}

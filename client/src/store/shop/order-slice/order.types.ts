@@ -1,45 +1,44 @@
-import { Addresses } from "../address-slice/address.types";
-
-export interface OrderItem {
-    productId: string;
-    quantity: number;
-    price: number;
-    [key: string]: any;
-}
-
-export interface OrderDetails {
+export interface ShopOrder {
     _id: string;
     userId: string;
-    cartItems: OrderItem[];
-    addressInfo: Addresses;
-    totalAmount: number;
     status: string;
-    createdAt: string;
-    [key: string]: any;
-}
-
-export interface OrderState {
-    approvalURL: string | null;
-    isLoading: boolean;
-    orderId: string | null;
-    orderList: OrderDetails[];
-    orderDetails: OrderDetails | null;
-}
-
-export interface CreateOrderResponse {
-    approvalUrl: string;
-    orderId: string;
-}
-
-export interface CapturePaymentParams {
-    paypalOrderId: string;
-    mongoOrderId: string;
-}
-
-export interface CreateOrderPayload {
-    userId: string;
-    cartId?: string;
-    cartItems: OrderItem[];
-    addressInfo: Addresses;
+    paymentMethod: string;
     totalAmount: number;
+    shippingFee: number;
+    finalAmount: number;
+    note?: string;
+    createdAt: string;
+    updatedAt: string;
+    shippingInfo: {
+        fullName: string;
+        phone: string;
+        street: string;
+        ward: string;
+        province: string;
+    };
+    items: {
+        productId: string;
+        name: string;
+        thumbnail?: string;
+        variant?: string | null;
+        quantity: number;
+        priceAtPurchase: number;
+        subtotal: number;
+    }[];
+    paymentResult?: {
+        provider?: string;
+        orderId?: string;
+        payerId?: string;
+        transactionId?: string;
+        status?: string;
+        paidAt?: string;
+        raw?: any;
+    } | null;
+}
+
+export interface ShopOrdersState {
+    list: ShopOrder[];
+    detail: ShopOrder | null;
+    loading: boolean;
+    error: string | null;
 }
