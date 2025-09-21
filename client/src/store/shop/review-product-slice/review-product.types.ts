@@ -1,23 +1,20 @@
 export interface Review {
     _id: string;
-    userId: string;
-    productId: string;
-    reviewValue: number;
-    reviewMessage: string;
+    product: string;
+    user: {
+        _id: string;
+        name: string;
+        avatar?: { url: string };
+    };
+    rating: number;
+    comment?: string;
     createdAt: string;
-    [key: string]: any;
+    updatedAt: string;
 }
 
 export interface ReviewState {
-    isLoading: boolean;
     reviews: Review[];
-}
-
-export interface AddReviewPayload {
-    userId: string;
-    userName: string;
-    productId: string;
-    reviewValue: number;
-    reviewMessage: string;
-    [key: string]: any;
+    total: number;
+    loading: boolean;
+    error: string | null;
 }

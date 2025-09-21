@@ -109,7 +109,7 @@ export default function Form({
                 </SelectTrigger>
                 <SelectContent>
                   {control.options?.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
+                    <SelectItem key={opt.value} value={String(opt.value)}>
                       {opt.label}
                     </SelectItem>
                   ))}

@@ -23,7 +23,7 @@ import shopCartSlice from "./shop/cart-slice";
 import shopOrderSlice from "./shop/order-slice/index";
 import shopCheckoutSlice from "./shop/order-slice/checkout-slice/index";
 import shopSearchProductSlice from "./shop/search-slice";
-import shopReviewProductSlice from "./shop/review-product-slice";
+import shopReviewProductSlice from "./shop/review-product-slice/index";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import { setupAxiosInterceptors } from "@/lib/axios-intercepter";

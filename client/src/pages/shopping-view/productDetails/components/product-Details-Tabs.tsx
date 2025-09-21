@@ -1,9 +1,22 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductDetail } from "@/store/shop/products-slice/allProducts-slice/allProducts.types";
+import ReviewForm from "../../reviews-product/reviews-form";
+import ReviewList from "../../reviews-product/reviews-list";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
-type ProductInfoProps = Pick<ProductDetail, "description">;
+type ProductDetailsTabsProps = {
+  productId: string;
+  description: string;
+  currentUser?: { _id: string; name: string };
+};
 
-const ProductDetailsTabs: React.FC<ProductInfoProps> = ({ description }) => {
+const ProductDetailsTabs: React.FC<ProductDetailsTabsProps> = ({
+  productId,
+  description,
+}) => {
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  console.log("ProductDetailsTabs currentUser:", currentUser);
   return (
     <div className="mt-10">
       <Tabs defaultValue="description" className="w-full">
@@ -27,17 +40,13 @@ const ProductDetailsTabs: React.FC<ProductInfoProps> = ({ description }) => {
         </TabsContent>
 
         <TabsContent value="reviews" className="p-4 space-y-3">
-          {/* Mock reviews */}
-          <div className="border rounded-xl p-3 shadow-sm">
-            <p className="font-semibold">Nguyễn Văn A</p>
-            <p className="text-sm text-gray-500">⭐ 5/5</p>
-            <p className="mt-2">Sản phẩm rất tốt, giao hàng nhanh.</p>
-          </div>
-          <div className="border rounded-xl p-3 shadow-sm">
-            <p className="font-semibold">Trần Thị B</p>
-            <p className="text-sm text-gray-500">⭐ 4/5</p>
-            <p className="mt-2">Hàng ổn, nhưng đóng gói chưa đẹp lắm.</p>
-          </div>
+          {currentUser && (
+            <ReviewForm
+              productId={productId}
+              onSuccess={() => console.log("Review success")}
+            />
+          )}
+          <ReviewList productId={productId} currentUserId={currentUser?._id} />
         </TabsContent>
 
         <TabsContent value="policy" className="p-4">

@@ -1,46 +1,96 @@
-import ProductReview from "../../models/review.model";
-import Order from "../../models/orders.model";
-import Product from "../../models/products.model";
+import { Types } from "mongoose";
 import { IReview } from "../../types/reviews.types";
+import ReviewModel from "../../models/review.model";
+import Product from "../../models/products.model";
 
-export const addProductReviewService = async (reviewData: IReview): Promise<IReview> => {
-    const { productId, userId, userName, reviewMessage, reviewValue } = reviewData;
+export const getReviewsByProductService = async (productId: string, page = 1, limit = 10) => {
+    const skip = (page - 1) * limit;
+    const [reviews, total] = await Promise.all([
+        ReviewModel.find({ product: productId })
+            .populate("user", "name avatar.url")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit),
+        ReviewModel.countDocuments({ product: productId }),
+    ]);
 
-    const order = await Order.findOne({
-        userId,
-        "cartItems.productId": productId,
-    });
-
-    if (!order) {
-        throw new Error("Bạn cần mua sản phẩm này để đánh giá!");
-    }
-
-    const existingReview = await ProductReview.findOne({ productId, userId });
-
-    if (existingReview) {
-        throw new Error("Bạn đã đánh giá sản phẩm này rồi! Vui lòng không đánh giá lại.");
-    }
-
-    const newReview = new ProductReview({
-        productId,
-        userId,
-        userName,
-        reviewMessage,
-        reviewValue,
-    });
-
-    await newReview.save();
-
-    const reviews = await ProductReview.find({ productId });
-    const totalReviewLength = reviews.length;
-    const averageReview =
-        reviews.reduce((sum, item) => sum + item.reviewValue, 0) / totalReviewLength;
-
-    await Product.findByIdAndUpdate(productId, { averageReview });
-
-    return newReview;
+    return { reviews, total };
 };
 
-export const getProductReviewsService = async (productId: string) => {
-    return await ProductReview.find({ productId });
+export const createReviewService = async (
+    productId: string,
+    userId: string,
+    rating: number,
+    comment?: string
+): Promise<IReview> => {
+    const review = await ReviewModel.create({
+        product: new Types.ObjectId(productId),
+        user: new Types.ObjectId(userId),
+        rating,
+        comment,
+    });
+
+    await updateProductStats(productId);
+    return review;
+};
+
+export const updateReviewService = async (
+    reviewId: string,
+    userId: string,
+    rating: number,
+    comment?: string
+) => {
+    const review = await ReviewModel.findOneAndUpdate(
+        { _id: reviewId, user: userId },
+        { rating, comment },
+        { new: true }
+    );
+
+    if (review) {
+        await updateProductStats(review.product.toString());
+    }
+    return review;
+};
+
+export const deleteReviewService = async (reviewId: string, userId: string) => {
+    const review = await ReviewModel.findOneAndDelete({ _id: reviewId, user: userId });
+    if (review) {
+        await updateProductStats(review.product.toString());
+    }
+    return review;
+};
+
+const updateProductStats = async (productId: string) => {
+    const stats = await ReviewModel.aggregate([
+        { $match: { product: new Types.ObjectId(productId) } },
+        {
+            $group: {
+                _id: null,
+                avgRating: { $avg: "$rating" },
+                totalReviews: { $sum: 1 },
+            },
+        },
+    ]);
+
+    if (stats.length > 0) {
+        await Product.findByIdAndUpdate(productId, {
+            averageRating: stats[0].avgRating,
+            totalReviews: stats[0].totalReviews,
+        });
+    } else {
+        await Product.findByIdAndUpdate(productId, {
+            averageRating: 0,
+            totalReviews: 0,
+        });
+    }
+
+    // const updateData = stats ? {
+    //     averageRating: Math.round(stats.avgRating * 10) / 10, // Round to 1 decimal
+    //     totalReviews: stats.totalReviews,
+    // } : {
+    //     averageRating: 0,
+    //     totalReviews: 0,
+    // };
+
+    // await Product.findByIdAndUpdate(productId, updateData);
 };

@@ -15,6 +15,8 @@ export interface IProduct {
     active: boolean;
     deletedImages?: string[];
     isFlashSale: boolean;
+    averageRating: number;
+    totalReviews: number;
 }
 
 export interface ProductImage {

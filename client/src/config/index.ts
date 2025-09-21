@@ -172,3 +172,29 @@ export const checkoutFormControls: FormControl[] = [
   },
   { name: "note", label: "Ghi chú", type: "textarea", placeholder: "Ghi chú thêm (nếu có)" },
 ]
+
+export const reviewsFormControls: FormControl[] = [
+  {
+    name: "rating",
+    label: "Đánh giá",
+    type: "select",
+    options: [
+      { label: "⭐ 1 - Rất tệ", value: 1 },
+      { label: "⭐⭐ 2 - Tệ", value: 2 },
+      { label: "⭐⭐⭐ 3 - Bình thường", value: 3 },
+      { label: "⭐⭐⭐⭐ 4 - Tốt", value: 4 },
+      { label: "⭐⭐⭐⭐⭐ 5 - Xuất sắc", value: 5 },
+    ],
+    rules: [{
+      type: "required",
+      message: "Vui lòng chọn điểm đánh giá"
+    }]
+  },
+  {
+    name: "comment",
+    label: "Nhận xét",
+    type: "textarea",
+    placeholder: "Hãy để lại đánh giá của bạn...",
+    rules: [{ type: "max", value: 500, message: "Nhận xét không được vượt quá 500 ký tự" }]
+  },
+];

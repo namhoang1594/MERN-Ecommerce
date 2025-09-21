@@ -26,6 +26,8 @@ const productSchema = new Schema<IProduct>(
     active: { type: Boolean, default: true },
     deletedImages: { type: [String], default: [] },
     isFlashSale: { type: Boolean, default: false },
+    averageRating: { type: Number, default: 0 },
+    totalReviews: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

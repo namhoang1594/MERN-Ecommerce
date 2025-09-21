@@ -18,6 +18,7 @@ const ProductDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const currentUser = useSelector((state: RootState) => state.auth.user);
   const { data, loading, error } = useSelector(
     (state: RootState) => state.shopProductDetails
   );
@@ -170,7 +171,11 @@ const ProductDetailPage = () => {
 
       {/* Full width below */}
       <div className="lg:col-span-2 mt-10">
-        <ProductDetailsTabs description={product.description} />
+        <ProductDetailsTabs
+          productId={product._id}
+          description={product.description}
+          currentUser={currentUser || undefined}
+        />
       </div>
 
       <div className="lg:col-span-2 mt-10">

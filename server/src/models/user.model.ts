@@ -30,7 +30,7 @@ const UserSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      minlength: 6, // rule cơ bản
+      minlength: 6,
     },
     role: {
       type: String,
@@ -53,7 +53,7 @@ const UserSchema = new Schema<IUser>(
     ],
   },
   {
-    timestamps: true, // auto thêm createdAt, updatedAt
+    timestamps: true,
   }
 );
 

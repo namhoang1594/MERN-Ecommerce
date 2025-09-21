@@ -70,7 +70,7 @@ app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/checkout", shopCheckoutRouter);
 app.use("/api/shop/orders", shopOrderRouter);
 app.use("/api/shop/search", shopSearchProductRouter);
-app.use("/api/shop/review", shopReviewProductRouter);
+app.use("/api/shop/reviews", shopReviewProductRouter);
 
 
 

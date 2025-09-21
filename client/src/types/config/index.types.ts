@@ -10,7 +10,7 @@ export interface FormControl {
     name: string;
     label: string;
     placeholder?: string;
-    options?: { label: string; value: string }[]; // dùng cho select
+    options?: { label: string; value: string | number }[]; // dùng cho select
     rules?: FieldRule[]; // validate rules
 }
 
