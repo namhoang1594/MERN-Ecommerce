@@ -1,9 +1,11 @@
 import { Schema, model } from "mongoose";
 import { IProduct } from "../types/products.types";
+import { removeVietnameseTones } from "../services/shop/search.service";
 
 const productSchema = new Schema<IProduct>(
   {
     title: { type: String, required: true },
+    titleWithoutTones: { type: String, trim: true },
     slug: { type: String, required: true, unique: true },
     description: { type: String },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
@@ -31,6 +33,16 @@ const productSchema = new Schema<IProduct>(
   },
   { timestamps: true }
 );
+
+productSchema.pre('save', function (next) {
+  if (this.isModified('title')) {
+    this.titleWithoutTones = removeVietnameseTones(this.title);
+  }
+  next();
+});
+
+// Index cho performance
+productSchema.index({ title: 'text', titleWithoutTones: 'text' });
 
 const Product = model<IProduct>("Product", productSchema);
 

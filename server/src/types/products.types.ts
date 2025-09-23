@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 export interface IProduct {
     _id?: Types.ObjectId;
     title: string;
+    titleWithoutTones: string;
     slug: string;
     description: string;
     category: Types.ObjectId;

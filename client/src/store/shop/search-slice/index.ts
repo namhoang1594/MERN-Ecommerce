@@ -1,46 +1,51 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SearchState } from "./search.types";
+import axiosInstance from "@/lib/axios";
 
 const initialState: SearchState = {
-  isLoading: false,
-  searchResults: [],
+  results: [],
+  loading: false,
+  error: null,
+  query: "",
+  total: 0,
 };
 
-export const getSearchResults = createAsyncThunk(
-  "/order/getSearchResults",
-  async (keyword: string) => {
-    const response = await axios.get(
-      `http://localhost:5000/api/shop/search/${keyword}`
-    );
-    return response.data;
+export const fetchSearchResults = createAsyncThunk(
+  "search/fetchResults",
+  async (query: string, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(`/shop/search?query=${encodeURIComponent(query)}`);
+      return res.data.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Search failed");
+    }
   }
 );
 
 const searchSlice = createSlice({
-  name: "searchSlice",
+  name: "searchShop",
   initialState,
   reducers: {
-    resetSearchResults: (state) => {
-      state.searchResults = [];
+    clearSearchResults: (state) => {
+      state.results = [];
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getSearchResults.pending, (state) => {
-        state.isLoading = true;
+      .addCase(fetchSearchResults.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(getSearchResults.fulfilled, (state, action: PayloadAction<{ data: any[] }>) => {
-        state.isLoading = false;
-        state.searchResults = action.payload.data;
+      .addCase(fetchSearchResults.fulfilled, (state, action) => {
+        state.loading = false;
+        state.results = action.payload;
       })
-      .addCase(getSearchResults.rejected, (state) => {
-        state.isLoading = false;
-        state.searchResults = [];
+      .addCase(fetchSearchResults.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Search failed";
       });
   },
 });
 
-export const { resetSearchResults } = searchSlice.actions;
-
+export const { clearSearchResults } = searchSlice.actions;
 export default searchSlice.reducer;

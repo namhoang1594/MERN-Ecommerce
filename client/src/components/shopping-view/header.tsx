@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserCircle2, LogOutIcon, LogInIcon, Loader2 } from "lucide-react";
+import {
+  UserCircle2,
+  LogOutIcon,
+  LogInIcon,
+  Loader2,
+  Search,
+  X,
+} from "lucide-react";
 import CartDropdown from "./cart-dropdown";
 import { toast } from "sonner";
+import { Input } from "../ui/input";
 
 export default function ShopHeader() {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,6 +37,8 @@ export default function ShopHeader() {
     isLoggedIn: cartIsLoggedIn,
     loading,
   } = useSelector((state: RootState) => state.shopCart);
+  const [query, setQuery] = useState("");
+
   //Single source of truth for auth state
   const isLoggedIn = !!user;
 
@@ -81,12 +91,42 @@ export default function ShopHeader() {
     }
   };
 
+  const handleSearch = () => {
+    if (query.trim()) {
+      navigate(`/search?query=${encodeURIComponent(query)}`);
+      setQuery("");
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm px-4 md:px-10 py-3 flex items-center justify-between">
       {/* Logo */}
       <Link to="/" className="text-xl font-bold text-primary">
         🛒 E-Shop
       </Link>
+
+      <div className="flex items-center gap-2 w-1/2">
+        <Input
+          placeholder="Tìm kiếm sản phẩm..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          className="pr-10"
+        />
+        {query && (
+          <X
+            className="absolute right-8 top-3 w-4 h-4 cursor-pointer text-gray-400"
+            onClick={() => setQuery("")}
+          />
+        )}
+        <Button
+          variant="outline"
+          onClick={handleSearch}
+          // className="absolute right-1 top-1"
+        >
+          <Search className="w-4 h-4" />
+        </Button>
+      </div>
 
       {/* Right section */}
       <div className="flex items-center space-x-4">

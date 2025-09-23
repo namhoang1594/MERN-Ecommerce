@@ -10,6 +10,7 @@ import AdminProducts from "./pages/admin-view/product/products";
 import AdminCategory from "./pages/admin-view/category/category";
 import AdminBrand from "./pages/admin-view/brand/brand";
 import AdminUsers from "./pages/admin-view/user-management/userManagement";
+import AdminOrdersPage from "./pages/admin-view/orders/order";
 
 import BannerManager from "./pages/admin-view/site-setting/banner";
 import SiteSetting from "./pages/admin-view/site-setting/site-setting";
@@ -22,13 +23,12 @@ import ProfilePage from "./pages/shopping-view/user-profile/user-profile";
 import CartPage from "./pages/shopping-view/cart";
 import PaypalSuccessPage from "./pages/shopping-view/orders/checkout/paypal-success";
 import PaypalCancelPage from "./pages/shopping-view/orders/checkout/paypal-cancel";
-// import SearchProducts from "./pages/shopping-view/search";
+import OrdersPage from "./pages/shopping-view/orders/orders";
+import CheckoutPage from "./pages/shopping-view/orders/checkout/checkout";
+import SearchPage from "./pages/shopping-view/search";
 
 import ProtectedRoute from "./components/auth/protectedGuard";
 import RoleGuard from "./components/auth/roleGuard";
-import AdminOrdersPage from "./pages/admin-view/orders/order";
-import OrdersPage from "./pages/shopping-view/orders/orders";
-import CheckoutPage from "./pages/shopping-view/orders/checkout/checkout";
 
 const App = () => {
   return (
@@ -64,6 +64,7 @@ const App = () => {
           element={<PaypalSuccessPage />}
         />
         <Route path="/checkout/paypal/cancel" element={<PaypalCancelPage />} />
+        <Route path="/search" element={<SearchPage />} />
 
         {/* Admin routes */}
         <Route

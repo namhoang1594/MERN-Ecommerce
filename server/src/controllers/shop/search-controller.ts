@@ -1,22 +1,20 @@
 import { Request, Response } from "express";
-import { searchProductsByKeyword } from "../../services/shop/search.service";
+import { searchProductsService } from "../../services/shop/search.service";
 
 export const searchProducts = async (req: Request, res: Response) => {
   try {
-    const { keyword } = req.params;
+    const { query } = req.query;
 
-    if (!keyword || typeof keyword !== "string") {
-      return res.status(400).json({
-        success: false,
-        message: "Từ khóa tìm kiếm không hợp lệ!",
-      });
+    if (!query || typeof query !== "string") {
+      return res.status(400).json({ message: "Query is required" });
     }
 
-    const searchResult = await searchProductsByKeyword(keyword);
+    const products = await searchProductsService(query);
 
-    res.status(200).json({
+    res.json({
       success: true,
-      data: searchResult,
+      data: products,
+      total: products.length
     });
   } catch (error) {
     console.error("Error in searchProducts:", error);

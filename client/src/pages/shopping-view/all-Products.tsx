@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import SidebarFilter from "@/components/shopping-view/products-Sidebar-Filter";
@@ -8,10 +8,8 @@ import {
   setFilters,
   setPage,
 } from "@/store/shop/products-slice/allProducts-slice";
-import { data, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Pagination } from "@/components/common/pagination";
-import { addToCart, addToLocalCart } from "@/store/shop/cart-slice";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -21,7 +19,7 @@ export default function ProductsPage() {
   const { products, loading, filters, totalPages, error } = useSelector(
     (state: RootState) => state.shopAllProducts
   );
-  const { isLoggedIn } = useSelector((state: RootState) => state.shopCart);
+  // const { isLoggedIn } = useSelector((state: RootState) => state.shopCart);
 
   // Lấy query params từ URL
   useEffect(() => {

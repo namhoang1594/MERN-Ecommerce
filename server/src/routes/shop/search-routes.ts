@@ -3,6 +3,6 @@ import { searchProducts } from "../../controllers/shop/search-controller";
 
 const router = Router();
 
-router.get("/:keyword", searchProducts);
+router.get("/", searchProducts);
 
 export default router;

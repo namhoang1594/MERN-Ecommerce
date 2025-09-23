@@ -1,6 +1,9 @@
-import { Product } from "../../../types/products/product.types";
+import { ShopProduct } from "../products-slice/allProducts-slice/allProducts.types";
 
 export interface SearchState {
-    isLoading: boolean;
-    searchResults: Product[];
+    results: ShopProduct[];
+    loading: boolean;
+    error: string | null;
+    query: string;
+    total: number
 }
