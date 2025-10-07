@@ -3,11 +3,11 @@ import CategoryList from "./categoryListSection";
 import FlashSaleSection from "./flashSaleSection";
 import SuggestionProduct from "./suggestionProductSection";
 import NewArrivalSection from "./newArrivalSection";
+import Footer from "./sectionFooter";
 
 export default function HomePage() {
   return (
-    <div className="space-y-10 pb-20">
-      <HeroBanner />
+    <div className="space-y-10">
       <section className="px-4 md:px-10">
         <h2 className="text-2xl font-semibold mb-4">Danh mục nổi bật</h2>
         <CategoryList />
@@ -16,11 +16,13 @@ export default function HomePage() {
         <h2 className="text-2xl font-semibold mb-4">Flash Sale</h2>
         <FlashSaleSection />
       </section>
-      <SuggestionProduct />
-      <NewArrivalSection />
-      <footer className="mt-10 py-10 bg-gray-100 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} E-Shop. All rights reserved.
-      </footer>
+      <section className="px-4 md:px-10">
+        <SuggestionProduct />
+      </section>
+      <section className="px-4 md:px-10">
+        <NewArrivalSection />
+      </section>
+      <Footer />
     </div>
   );
 }

@@ -32,7 +32,7 @@ const CategoryList = () => {
       _id: "all-products",
       name: "Tất cả sản phẩm",
       slug: "/products",
-      image: { url: "/images/all-products.png" },
+      image: { url: "/src/assets/all.png" },
     },
     ...categories,
   ];

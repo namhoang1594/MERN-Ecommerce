@@ -1,14 +1,18 @@
-
-export interface IBannerBase {
-    image: string;
+export enum BannerPosition {
+    MAIN = "main",
+    SIDE_TOP = "side-top",
+    SIDE_BOTTOM = "side-bottom"
+}
+export interface IBanner {
+    _id?: string;
+    image: {
+        url: string;
+        public_id: string;
+    };
     title?: string;
     link?: string;
-    position?: "home" | "sale" | "custom";
-    isActive?: boolean;
-}
-
-export interface IBanner extends IBannerBase {
-    _id?: string;
+    position: BannerPosition;
+    isActive: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 }

@@ -99,81 +99,97 @@ export default function ShopHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b shadow-sm px-4 md:px-10 py-3 flex items-center justify-between">
-      {/* Logo */}
-      <Link to="/" className="text-xl font-bold text-primary">
-        🛒 E-Shop
-      </Link>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm px-4 md:px-10 py-3">
+      <div className="flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="text-xl font-bold text-primary">
+          🛒 E-Shop
+        </Link>
 
-      <div className="flex items-center gap-2 w-1/2">
-        <Input
-          placeholder="Tìm kiếm sản phẩm..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="pr-10"
-        />
-        {query && (
-          <X
-            className="absolute right-8 top-3 w-4 h-4 cursor-pointer text-gray-400"
-            onClick={() => setQuery("")}
-          />
-        )}
-        <Button
-          variant="outline"
-          onClick={handleSearch}
-          // className="absolute right-1 top-1"
-        >
-          <Search className="w-4 h-4" />
-        </Button>
-      </div>
-
-      {/* Right section */}
-      <div className="flex items-center space-x-4">
-        {/* Cart with sync indicator */}
-        <div className="relative">
-          <CartDropdown />
-          {loading.fetch && (
-            <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full p-1">
-              <Loader2 className="w-3 h-3 animate-spin" />
-            </div>
-          )}
+        {/* Search bar */}
+        <div className="flex flex-col flex-1 max-w-xl mx-4">
+          <div className="relative w-full">
+            <Input
+              placeholder="Tìm kiếm sản phẩm..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              className="w-full rounded-full pl-4 pr-10"
+            />
+            {query && (
+              <X
+                className="absolute right-10 top-2.5 w-4 h-4 cursor-pointer text-gray-400"
+                onClick={() => setQuery("")}
+              />
+            )}
+            <Search
+              onClick={handleSearch}
+              className="absolute right-3 top-2 w-5 h-5 cursor-pointer text-gray-500"
+            />
+          </div>
+          <div className="text-xs text-gray-500 mt-1 flex flex-wrap gap-2">
+            Xu hướng:
+            {/* {trending.map((kw) => (
+              <span
+                key={kw}
+                onClick={() =>
+                  navigate(`/search?query=${encodeURIComponent(kw)}`)
+                }
+                className="cursor-pointer hover:text-primary"
+              >
+                {kw}
+              </span>
+            ))} */}
+          </div>
         </div>
 
-        {/* Auth */}
-        {!isLoggedIn ? (
-          <Button variant="outline" size="sm" onClick={handleLogin}>
-            <LogInIcon className="w-4 h-4 mr-1" />
-            Đăng nhập
-          </Button>
-        ) : (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-1"
-              >
-                <UserCircle2 className="w-5 h-5" />
-                <span className="hidden sm:inline">
-                  {user?.name || "Tài khoản"}
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link to="/profile">Thông tin cá nhân</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/orders">Đơn hàng đã mua</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOutIcon className="w-4 h-4 mr-2" />
-                Đăng xuất
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+        {/* Right section */}
+        <div className="flex items-center space-x-4">
+          {/* Cart */}
+          <div className="relative">
+            <CartDropdown />
+            {loading.fetch && (
+              <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full p-1">
+                <Loader2 className="w-3 h-3 animate-spin" />
+              </div>
+            )}
+          </div>
+
+          {/* Auth */}
+          {!isLoggedIn ? (
+            <Button variant="outline" size="sm" onClick={handleLogin}>
+              <LogInIcon className="w-4 h-4 mr-1" />
+              Đăng nhập
+            </Button>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-1"
+                >
+                  <UserCircle2 className="w-5 h-5" />
+                  <span className="hidden sm:inline">
+                    {user?.name || "Tài khoản"}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/profile">Thông tin cá nhân</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/orders">Đơn hàng đã mua</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOutIcon className="w-4 h-4 mr-2" />
+                  Đăng xuất
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
     </header>
   );

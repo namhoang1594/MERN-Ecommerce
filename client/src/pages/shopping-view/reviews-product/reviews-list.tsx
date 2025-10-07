@@ -25,8 +25,6 @@ const ReviewList: React.FC<ReviewListProps> = ({
 
   if (loading) return <p>Đang tải đánh giá...</p>;
 
-  console.log("Current User ID:", currentUserId);
-
   return (
     <div className="space-y-4">
       {reviews.length === 0 && <p>Chưa có đánh giá nào</p>}

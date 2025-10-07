@@ -4,6 +4,7 @@ export interface Product {
     _id: string;
     image: ProductImage[];
     title: string;
+    slug: string;
     description?: string;
     category?: {
         _id: string;

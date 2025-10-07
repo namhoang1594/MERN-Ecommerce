@@ -39,6 +39,27 @@ const App = () => {
           <Route index element={<ShoppingHome />} />
           <Route path="products" element={<ShoppingAllProducts />} />
           <Route path="products/:slug" element={<ShoppingProductDetails />} />
+          <Route
+            path="/profile/*"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route
+            path="/checkout/paypal/success"
+            element={<PaypalSuccessPage />}
+          />
+          <Route
+            path="/checkout/paypal/cancel"
+            element={<PaypalCancelPage />}
+          />
+          <Route path="/search" element={<SearchPage />} />
         </Route>
 
         {/* Auth routes */}
@@ -46,25 +67,6 @@ const App = () => {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
         </Route>
-
-        <Route
-          path="/profile/*"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/orders" element={<OrdersPage />} />
-        <Route
-          path="/checkout/paypal/success"
-          element={<PaypalSuccessPage />}
-        />
-        <Route path="/checkout/paypal/cancel" element={<PaypalCancelPage />} />
-        <Route path="/search" element={<SearchPage />} />
 
         {/* Admin routes */}
         <Route
